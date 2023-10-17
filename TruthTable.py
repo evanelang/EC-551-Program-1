@@ -43,9 +43,9 @@ def evaluate_boolean_equation(boolean_equation):
         
         yessave = yes[:]
         nosave = no[:]
-        for leftspot in range(columns):
+        for leftspot in range(row):
             
-            for rightspot in range(row):
+            for rightspot in range(columns):
                 yes = yessave[:]
                 no = nosave[:]
                 yestracker = 1
@@ -153,7 +153,7 @@ if __name__ == '__main__':
     mypos = POSform(Variables, Minterms)
     print("My SOP: ", mysop)
     print("My POS: ", mypos)
-    for h in range(len(truthtable[0])):
+    for h in range(len(truthtable)):
         print(truthtable[h])
     print(SOPform(Variables, Minterms))
     commandin = input("What do you want to do to the boolean equation?: ")
