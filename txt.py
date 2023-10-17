@@ -17,6 +17,7 @@ test_case('A*B*C+D*E*F', [0, 1, 2, 3, 4, 5, 6, 7])
 
 # create a test case for the boolean equation function
 def test_case(bolean_equation, expected_result):
+    evaluate_boolean_equation=2
     # test case 1
     if evaluate_boolean_equation(bolean_equation) == expected_result:
         print('Test case passed')
