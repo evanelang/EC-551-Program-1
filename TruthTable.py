@@ -1,5 +1,7 @@
 import sys
+import sympy
 from sympy import *
+from sympy.logic import SOPform
 def evaluate_boolean_equation(boolean_equation):
     # Implementing a stack to evaluate the boolean equation
     Variables = []
@@ -98,12 +100,14 @@ def evaluate_boolean_equation(boolean_equation):
                     
 
                 if yestracker == 1 and notracker == 0:
+                    finnum = (leftspot*columns) + rightspot
                     print("term: ", term)
                     print("Hit: ", (leftspot*columns) + rightspot)
-      
+                    if finnum not in Minterms:
+                        Minterms.append(finnum)
                     kmap[leftspot][rightspot] = 1
             cyclecount += 1
-        Minterms.append(Minterm)
+        #Minterms.append(Minterm)
     print(Minterms)
     for h in range(row):
         print(kmap[h])
@@ -122,7 +126,30 @@ if __name__ == '__main__':
     Variables = []
     Minterms = []
     truthtable, Minterms, Variables = evaluate_boolean_equation(boolean_equation)
+    mysop = SOPform(Variables, Minterms)
+    #invertminterms
+    invmin = []
+    biggestnum = (2**(len(Variables))) - 1
+    for i in range(biggestnum):
+        if i not in Minterms:
+            invmin.append(i)
+        else:
+            invmin.append(0)
+
+    mypos = POSform(Variables, Minterms)
     for h in range(len(truthtable[0])):
         print(truthtable[h])
+    print(SOPform(Variables, Minterms))
+    commandin = input("What do you want to do to the boolean equation?: ")
+    match commandin:
+        case "1":
+            print(mysop)
+        case "2":
+            print(mypos)
+        case "3":
+            print(SOPform(Variables, invmin))
+        case "4":
+            print(POSform(Variables, invmin))
+        case "5":
     #ask for commands for what to do to boolean equation
     #print(boolean_equation)
