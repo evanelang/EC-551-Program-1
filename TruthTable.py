@@ -113,6 +113,20 @@ def evaluate_boolean_equation(boolean_equation):
         print(kmap[h])
     return kmap, Minterms, Variables
 
+def SOP(Variables, Minterms):
+    newterms = []
+    for mymin in Minterms:
+        curterm = []
+        for myvar in Variables:
+            if mymin >= 2**(len(Variables) - Variables.index(myvar)-1):
+                curterm.append(myvar)
+                mymin = mymin - 2**(len(Variables) - Variables.index(myvar)-1)
+            else:
+                curterm.append('!' + myvar)
+        if curterm not in newterms:
+            newterms.append(curterm)
+    return newterms
+
 
                     
 
@@ -137,31 +151,44 @@ if __name__ == '__main__':
             invmin.append(0)
 
     mypos = POSform(Variables, Minterms)
+    print("My SOP: ", mysop)
+    print("My POS: ", mypos)
     for h in range(len(truthtable[0])):
         print(truthtable[h])
     print(SOPform(Variables, Minterms))
     commandin = input("What do you want to do to the boolean equation?: ")
     match commandin:
         case "1":
-            print(mysop)
+            canonsop = SOP(Variables, Minterms)
+            finstring = ""
+            for term in canonsop:
+                termstring = "("
+                for literal in term:
+                    termstring += literal
+                    termstring += "*"
+                finstring += termstring[:-1]
+                finstring += ")+"
+            finstring = finstring[:-1]
+            print(finstring)
+            #print(to_anf(mysop, mypos))
         case "2":
-            print(mypos)
+            canonsop = SOP(Variables, invmin)
+            finstring = ""
+            for term in canonsop:
+                termstring = "("
+                for literal in term:
+                    termstring += literal
+                    termstring += "+"
+                finstring += termstring[:-1]
+                finstring += ")*"
+            finstring = finstring[:-1]
+            print(finstring)
+            #print(to_anf(mysop, mypos))
         case "3":
             print(SOPform(Variables, invmin))
         case "4":
             print(POSform(Variables, invmin))
         case "5":
+            print(simplify_logic(mysop))
     #ask for commands for what to do to boolean equation
     #print(boolean_equation)
-
-
-    
-
-
-
-   
-        
-
-
-
-
