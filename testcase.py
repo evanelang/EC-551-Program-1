@@ -1,5 +1,14 @@
 
-#test cases 
+
+
+# test case
+# match case
+# match case is a new feature in python 3.10
+# match case is a new way to write switch case in python
+# match case is more powerful than switch case
+# match case is more readable than switch case
+# match case is more flexible than switch case
+# match case is more efficient than switch case
 def test_case(test_cases):
     match (test_cases):
         case 1:

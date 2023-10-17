@@ -153,3 +153,15 @@ if __name__ == '__main__':
         case "5":
     #ask for commands for what to do to boolean equation
     #print(boolean_equation)
+
+
+    
+
+
+
+   
+        
+
+
+
+
