@@ -1,6 +1,7 @@
 import sys
 import sympy
 from sympy import *
+from sympy.logic.boolalg import to_dnf
 from sympy.logic import SOPform
 from sympy.logic import POSform
 
@@ -119,6 +120,7 @@ def evaluate_boolean_equation(boolean_equation):
     return kmap, Minterms, Variables
 
 #takes the minterms and variables of a boolean equation and returns the SOP in canonical form
+#takes the minterms and variables of a boolean equation and returns the SOP in canonical form
 def SOP(Variables, Minterms):
     newterms = []
     for mymin in Minterms:
@@ -134,6 +136,73 @@ def SOP(Variables, Minterms):
     return newterms
 
 
+
+
+#report the number of prime Implicants
+def report_prime_implicant(Variables, minterms):
+    
+    #using the function SOP above, i could of have used the one in sympy
+    mysop = SOP(Variables, minterms)
+    
+   
+    num_var = len(Variables)
+    prime_implicants = []
+    for i in range(2**num_var):
+        binary = bin(i)[2:].zfill(num_var)
+        minterm = [int(x) for x in binary]
+        if evaluate_boolean_equation(boolean_equation,minterm):
+            prime_implicants.append(minterm)
+    
+    
+    essential_prime_implicants = []
+    remaining_minterms = minterms.copy()
+    while remaining_minterms:
+        covered_minterms = set()
+        for implicant in prime_implicants:
+            if set(implicant).issubset(remaining_minterms):
+                essential_prime_implicants.append(implicant)
+                covered_minterms.update(implicant)
+        remaining_minterms = remaining_minterms - covered_minterms
+        prime_implicants = [implicant for implicant in prime_implicants if set(implicant).isdisjoint(covered_minterms)]
+    
+   
+    num_prime_implicants = len(essential_prime_implicants)
+    
+ 
+    return mysop, num_prime_implicants
+
+
+#report the number of essential prime implicants
+def report_num_essential_prime_implicants(boolean_equation):
+    # Get the variables and the inverse minterms of the boolean equation
+    Variables, invmin = evaluate_boolean_equation(boolean_equation)
+
+    
+    num_var = len(Variables)
+    prime_implicants = []
+    for i in range(2**num_var):
+        binary = bin(i)[2:].zfill(num_var)
+        implicant = [int(x) for x in binary]
+        if evaluate_boolean_equation(boolean_equation, implicant):
+            prime_implicants.append(implicant)
+
+    
+    essential_prime_implicants = []
+    remaining_minterms = invmin.copy()
+    while remaining_minterms:
+        covered_minterms = set()
+        for implicant in prime_implicants:
+            if set(implicant).issubset(remaining_minterms):
+                essential_prime_implicants.append(implicant)
+                covered_minterms.update(implicant)
+        remaining_minterms = remaining_minterms - covered_minterms
+        prime_implicants = [implicant for implicant in prime_implicants if set(implicant).isdisjoint(covered_minterms)]
+
+    
+    num_essential_prime_implicants = len(essential_prime_implicants)
+
+    # Return the result
+    return num_essential_prime_implicants
 
 
 
@@ -194,10 +263,29 @@ if __name__ == '__main__':
         case "3":
             print(SOPform(Variables, invmin))
         case "4":
-            print(POSform(Variables, invmin))
+            mysop= SOPform(Variables, invmin) 
+            print(mysop)
         case "5":
             print(simplify_logic(mysop))
-        
+
+        case "6":
+            # Get the variables and the inverse minterms of the boolean equation
+            
+            Variables, invmin = evaluate_boolean_equation(boolean_equation)
+
+            # Count the number of prime implicants
+            num_prime_implicants = report_prime_implicant(Variables, invmin)
+
+            # Print the result
+            print("The number of prime implicants is: " + str(num_prime_implicants))
+        case "7":
+            # Call the function and print the result
+            num_essential_prime_implicants = report_num_essential_prime_implicants(boolean_equation)
+            print("The number of essential prime implicants is:", num_essential_prime_implicants)
 
     #ask for commands for what to do to boolean equation
     #print(boolean_equation)
+
+    #changes made / modified case 4 such as to put _ to ignore 
+    # the second value in the tuple. modified case 2; 
+    # for simplify parameter, set it to false for POS and true for SOP

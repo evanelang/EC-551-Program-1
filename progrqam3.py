@@ -1,6 +1,7 @@
 import sys
 import sympy
 from sympy import *
+from sympy.logic.boolalg import to_dnf
 from sympy.logic import SOPform
 from sympy.logic import POSform
 
@@ -119,6 +120,7 @@ def evaluate_boolean_equation(boolean_equation):
     return kmap, Minterms, Variables
 
 #takes the minterms and variables of a boolean equation and returns the SOP in canonical form
+#takes the minterms and variables of a boolean equation and returns the SOP in canonical form
 def SOP(Variables, Minterms):
     newterms = []
     for mymin in Minterms:
@@ -136,6 +138,38 @@ def SOP(Variables, Minterms):
 
 
 
+#report the number of prime Implicants
+def quine_mccluskey(Variables, Minterms):
+    implicants = [[i] for i in Minterms]
+    while True:
+        new_implicants = []
+        for i in range(len(implicants)-1):
+            for j in range(i+1, len(implicants)):
+                implicant1 = implicants[i]
+                implicant2 = implicants[j]
+                if len(implicant1) < len(Variables) or len(implicant2) < len(Variables):
+                    continue
+                diff = 0
+                for k in range(len(Variables)):
+                    if implicant1[k] != implicant2[k]:
+                        diff += 1
+                        pos = k
+                if diff == 1:
+                    new_implicant = implicant1.copy()
+                    new_implicant[pos] = '-'
+                    if new_implicant not in new_implicants:
+                        new_implicants.append(new_implicant)
+        if not new_implicants:
+            break
+        implicants += new_implicants
+    prime_implicants = []
+    for implicant in implicants:
+        if implicant.count('-') == implicant.count('0') + implicant.count('1') - 1:
+            prime_implicants.append(implicant)
+    return len(prime_implicants)
+
+
+
 
 
 
@@ -146,6 +180,10 @@ if __name__ == '__main__':
     print(boolean_equation)
     Variables = []
     Minterms = []
+    '''
+    adding dont care here
+    '''
+    Dontcares = []
     truthtable, Minterms, Variables = evaluate_boolean_equation(boolean_equation)
     mysop = SOPform(Variables, Minterms)
     #invertminterms
@@ -194,10 +232,17 @@ if __name__ == '__main__':
         case "3":
             print(SOPform(Variables, invmin))
         case "4":
-            print(POSform(Variables, invmin))
+            mysop= SOPform(Variables, invmin) 
+            print(mysop)
         case "5":
             print(simplify_logic(mysop))
-        
+        case "6":
+            print("Counting prime Implicants", quine_mccluskey(Variables, Minterms))
 
+        
+       
     #ask for commands for what to do to boolean equation
     #print(boolean_equation)
+
+    #changes made / modified case 4 such as to put _ to ignore 
+    # the second value in the tuple. modified case 2; 
