@@ -263,7 +263,7 @@ def essential_prime_implicants(Variables, Minterms, Dontcares):
     if single_ones:
         essential_prime_implicants.append(single_ones[0])
 
-    return len(essential_prime_implicants)
+    return essential_prime_implicants
 
 
 
@@ -379,7 +379,7 @@ if __name__ == '__main__':
             
 
         case "8":
-            print("counting essential prime implicant",essential_prime_implicants(Variables, Minterms, Dontcares))
+            print("Essential prime implicant",essential_prime_implicants(Variables, Minterms, Dontcares))
         case "9":
             
             print("Number of ON-Set minterms:", len(Minterms))
