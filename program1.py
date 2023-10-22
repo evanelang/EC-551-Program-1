@@ -172,7 +172,46 @@ def prime_implicants(Variables, Minterms):
                     count += 1
                     minterms.append(mymin)
             minterms_covered.append(minterms)
-    return prime_implicants, minterms_covered
+
+    #reduce if one character difference, delete both of them in the list
+    # the goal is to reduce the reduce the list if prime implicants were printed out.
+    ##([['A', 'B', '!C', '!D'], ['A', 'B', '!C', 'D'] to [A,B,D]
+    #creating a nested loop to compare each implicant with every other implicant in the list
+       
+    for i in range(len(prime_implicants)):
+        for j in range(i+1, len(prime_implicants)):
+            diff_ch_count = 0
+            diff_index = -1
+            for v in range(len(prime_implicants[i])):
+                if prime_implicants[i][v] != prime_implicants[j][v]:
+                    diff_ch_count += 1
+                    diff_index = v
+            if diff_ch_count == 1:
+                r_implicant = prime_implicants[i].copy()
+                r_implicant[diff_index] = prime_implicants[i][diff_index][0]
+                if r_implicant not in prime_implicants:
+                    prime_implicants.append(r_implicant)
+                    minterms_covered.append(list(set(minterms_covered[i] + minterms_covered[j])))
+    #convert to list of variables to reduced list
+    reduced_list = []
+    for implicant in prime_implicants:
+        for literal in implicant:
+            if literal[0] == '!':
+                variable = literal[1:]
+            else:
+                variable = literal
+            if variable not in reduced_list:
+                reduced_list.append(variable)
+    if reduced_list[-1] == '':
+        reduced_list.pop()
+    return reduced_list 
+    
+
+
+
+
+
+
 
 #report the number of essential prime implicants
 def essential_prime_implicants(Variables, Minterms, Dontcares):
@@ -301,10 +340,12 @@ if __name__ == '__main__':
             mysop= SOPform(Variables, invmin) 
             print(mysop)
         case "5":
-            print(simplify_logic(mysop))
+            print(" minimized number of literals representation in SOP",simplify_logic(mysop))
         case "6":
-            count= len(prime_implicants(Variables, Minterms))
-            print("counting prime implicant",count)
+            p_implicant= (prime_implicants(Variables, Minterms))
+            count_lit= len(p_implicant)
+            print("reporting prime implicant",p_implicant, "count_lit:", count_lit)
+            
 
         case "7":
             print("counting essential prime implicant",essential_prime_implicants(Variables, Minterms, Dontcares))
