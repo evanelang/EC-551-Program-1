@@ -337,54 +337,66 @@ if __name__ == '__main__':
     for h in range(len(truthtable)):
         print(truthtable[h])
     print(SOPform(Variables, Minterms))
+    myexit = 0
+    print("Command 12 exits program")
     commandin = input("What do you want to do to the boolean equation?: ")
-    match commandin:
-        case "1":
-            canonsop = SOP(Variables, Minterms)
-            a = build_canon_sop(canonsop)
-            print("Canon SOP: ", build_canon_sop(canonsop))
-            
-            #print(to_anf(mysop, mypos))
-        case "2":
-            canonsop = SOP(Variables, invmin)
-            print("Canon POS: ", build_canon_pos(canonsop))
-        case "3":
-            canonsop = SOP(Variables, invmin)
-            print("Canon Inverse SOP: ", build_canon_sop(canonsop))
-        case "4":
-            canonsop = SOP(Variables, Minterms)
-            print("Canon Inverse POS: ", build_canon_pos(canonsop))
-        case "5":
-            simp = simplify_logic(mysop)
-            canonsop = SOP(Variables, Minterms)
-            neweq = build_canon_sop(canonsop)
-            simpcount = literal_count(str(simp))
-            cancount = literal_count(neweq)
-            numsave = cancount-simpcount
-            print(" minimized number of literals representation in SOP: ",simplify_logic(mysop))
-            print("number of literals saved: ", numsave)
-        case "6":
-            simp = simplify_logic(mypos)
-            canonpos = SOP(Variables, invmin)
-            neweq = build_canon_pos(canonpos)
-            simpcount = literal_count(str(simp))
-            cancount = literal_count(neweq)
-            numsave = cancount-simpcount
-            print(" minimized number of literals representation in POS",simplify_logic(mypos))
-            print("number of literals saved: ", numsave)
-        case "7":
-            p_implicant= (prime_implicants(Variables, Minterms))
-            count_lit= len(p_implicant)
-            print("reporting prime implicant",p_implicant, "count_lit:", count_lit)
-            
+    while myexit != 1:
+        match commandin:
+            case "1":
+                canonsop = SOP(Variables, Minterms)
+                a = build_canon_sop(canonsop)
+                print("Canon SOP: ", build_canon_sop(canonsop))
 
-        case "8":
-            print("Essential prime implicant",essential_prime_implicants(Variables, Minterms, Dontcares))
-        case "9":
-            
-            print("Number of ON-Set minterms:", len(Minterms))
-        case"10":
-            print("Number of ON-Set Maxterms:", len(ON_Set_Max(Variables, Minterms)))
+                #print(to_anf(mysop, mypos))
+            case "2":
+                canonsop = SOP(Variables, invmin)
+                print("Canon POS: ", build_canon_pos(canonsop))
+            case "3":
+                canonsop = SOP(Variables, invmin)
+                print("Canon Inverse SOP: ", build_canon_sop(canonsop))
+            case "4":
+                canonsop = SOP(Variables, Minterms)
+                print("Canon Inverse POS: ", build_canon_pos(canonsop))
+            case "5":
+                simp = simplify_logic(mysop)
+                canonsop = SOP(Variables, Minterms)
+                neweq = build_canon_sop(canonsop)
+                simpcount = literal_count(str(simp))
+                cancount = literal_count(neweq)
+                numsave = cancount-simpcount
+                print(" minimized number of literals representation in SOP: ",simplify_logic(mysop))
+                print("number of literals saved: ", numsave)
+            case "6":
+                simp = simplify_logic(mypos)
+                canonpos = SOP(Variables, invmin)
+                neweq = build_canon_pos(canonpos)
+                simpcount = literal_count(str(simp))
+                cancount = literal_count(neweq)
+                numsave = cancount-simpcount
+                print(" minimized number of literals representation in POS",simplify_logic(mypos))
+                print("number of literals saved: ", numsave)
+            case "7":
+                p_implicant= (prime_implicants(Variables, Minterms))
+                count_lit= len(p_implicant)
+                print("reporting prime implicant",p_implicant, "count_lit:", count_lit)
+
+
+            case "8":
+                print("counting essential prime implicant",essential_prime_implicants(Variables, Minterms, Dontcares))
+            case "9":
+
+                print("Number of ON-Set minterms:", len(Minterms))
+            case "10":
+                print("Number of ON-Set Maxterms:", len(ON_Set_Max(Variables, Minterms)))
+            case "11":
+                print("All variables in entry: ", Variables)
+            case "12":
+                print("Exiting program...")
+                break
+                
+        if(commandin != 12):
+            commandin = input("What do you want to do to the boolean equation?: ")
+    print("Program exited")
         
     #ask for commands for what to do to boolean equation
     #print(boolean_equation)
