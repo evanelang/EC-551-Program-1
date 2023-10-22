@@ -343,7 +343,7 @@ if __name__ == '__main__':
             canonsop = SOP(Variables, Minterms)
             a = build_canon_sop(canonsop)
             print("Canon SOP: ", build_canon_sop(canonsop))
-            print("Literal Count: ", literal_count(a))
+            
             #print(to_anf(mysop, mypos))
         case "2":
             canonsop = SOP(Variables, invmin)
