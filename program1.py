@@ -148,7 +148,10 @@ def SOP(Variables, Minterms):
     #The implicants list is used to store all the implicants generated from the given minterms, 
     # which are then used to find the prime implicants.
 
+    #run sop
+    # into [AB, CD] into ['A', 'B', 'C', 'D']
 def prime_implicants(Variables, Minterms):
+   
     implicants = []
     for mymin in Minterms:
         curterm = []
@@ -158,6 +161,7 @@ def prime_implicants(Variables, Minterms):
                 mymin = mymin - 2**(len(Variables) - Variables.index(myvar)-1)
             else:
                 curterm.append('!' + myvar)
+            
         implicants.append(curterm)
         #returns a list of minterms covered by each prime implicant.
     prime_implicants = []
@@ -168,10 +172,12 @@ def prime_implicants(Variables, Minterms):
             count = 0
             minterms = []
             for mymin in Minterms:
-                if all(literal in implicant for literal in SOP(Variables, [mymin])):
+                if all(literal in implicant or ('!' + literal) in implicant for literal in [str(literal) for literal in SOP(Variables, [mymin])]):
                     count += 1
                     minterms.append(mymin)
-            minterms_covered.append(minterms)
+            minterms_covered.append(minterms)         
+
+
 
     #reduce if one character difference, delete both of them in the list
     # the goal is to reduce the reduce the list if prime implicants were printed out.
@@ -188,23 +194,55 @@ def prime_implicants(Variables, Minterms):
                     diff_index = v
             if diff_ch_count == 1:
                 r_implicant = prime_implicants[i].copy()
-                r_implicant[diff_index] = prime_implicants[i][diff_index][0]
+                r_implicant[diff_index] = prime_implicants[i][diff_index][0] if prime_implicants[i][diff_index][0] == '!' else '!' + prime_implicants[i][diff_index]
                 if r_implicant not in prime_implicants:
                     prime_implicants.append(r_implicant)
                     minterms_covered.append(list(set(minterms_covered[i] + minterms_covered[j])))
     #convert to list of variables to reduced list
     reduced_list = []
     for implicant in prime_implicants:
+        combined_literal = ''
         for literal in implicant:
-            if literal[0] == '!':
-                variable = literal[1:]
+            if isinstance(literal, list): # check if the literal is a list
+                combined_literal += ''.join(literal) # convert the list to a string before concatenating
             else:
-                variable = literal
-            if variable not in reduced_list:
-                reduced_list.append(variable)
-    if reduced_list[-1] == '':
-        reduced_list.pop()
-    return reduced_list 
+                combined_literal += str(literal)
+        combined_literal = combined_literal.replace('!!', '!') # replace double '!!' with a single '!'
+        if combined_literal[-1]=="!":                           #remove ! at the end of the last string
+            combined_literal = combined_literal[:-1]
+        if combined_literal not in reduced_list:
+            reduced_list.append(combined_literal)
+
+    return reduced_list
+
+
+
+
+#cant concatenate lists
+#sequence item 0: expected str instance, list found
+
+# reduced list ignoring !
+#['ABCD', 'ABC', 'ABD', 'ACD', 'BCD']
+
+# last code
+#['ABCD', '!ABCD', 'ABC', 'ABD', '!ACD', 'BCD']
+#with outignore
+#['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C!', 'AB!!D', 'AB!D', 'ABC!', '!A!CD', '!!BCD'].
+#['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C', 'AB!D', 'ABC', '!A!CD', '!BCD']
+#['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C!', 'AB!D', 'ABC!', '!A!CD', '!BCD']
+#['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C', 'AB!D', 'ABC', '!A!CD', '!BCD']
+
+#righ now code: ['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C', 'AB!D', 'ABC', '!A!CD', '!BCD'}
+
+
+
+#[['A', 'B', '!C', '!D'], ['A', 'B', '!C', 'D'], ['A', 'B', 'C', '!D'], 
+# ['A', 'B', 'C', 'D'], ['!A', '!B', 'C', 'D'], 
+# ['!A', 'B', 'C', 'D'], 
+# ['A', '!B', 'C', 'D'], 'A']
+
+
+
 def literal_count(equation):
     Variables = []
     for char in equation:
@@ -214,11 +252,7 @@ def literal_count(equation):
 
 
 
-
-
-
-
-#report the number of essential prime implicants
+# essential prime implicants
 def essential_prime_implicants(Variables, Minterms, Dontcares):
     implicants = []
     for mymin in Minterms:
@@ -258,13 +292,14 @@ def essential_prime_implicants(Variables, Minterms, Dontcares):
     uncovered_minterms = set(Minterms + Dontcares) - set(covered_minterms)
     essential_prime_implicants += uncovered_minterms
 
-# Check if there is at least one single 1 that cannot be covered any other way
+    # Check if there is at least one single 1 that cannot be covered any other way
     single_ones = [mymin for mymin in uncovered_minterms if bin(mymin).count('1') == 1]
     if single_ones:
         essential_prime_implicants.append(single_ones[0])
 
-    return essential_prime_implicants
-
+    # modify the return statement to print the implicants in the same format as prime_implicants
+    return [" ".join([var if var[0] != '!' else var[1]+'\''
+                     for var in str(term)]) for term in essential_prime_implicants]
 
 
 
@@ -308,6 +343,9 @@ def build_canon_pos(canonsop):
         finstring += ")*"
     finstring = finstring[:-1]
     return(finstring)
+
+
+
 
 
 if __name__ == '__main__':
@@ -377,11 +415,13 @@ if __name__ == '__main__':
                 print("number of literals saved: ", numsave)
             case "7":
                 p_implicant= (prime_implicants(Variables, Minterms))
-                count_lit= len(p_implicant)
-                print("reporting prime implicant",p_implicant, "count_lit:", count_lit)
+                #count_lit= len(p_implicant)
+                print("reporting prime implicant",p_implicant, "count_lit:")
+                
 
 
             case "8":
+                
                 print("counting essential prime implicant",essential_prime_implicants(Variables, Minterms, Dontcares))
             case "9":
 
