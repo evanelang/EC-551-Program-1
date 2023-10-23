@@ -437,7 +437,7 @@ if __name__ == '__main__':
         if(commandin != 12):
             commandin = input("What do you want to do to the boolean equation?: ")
     print("Program exited")
-        
+    #Check
     #ask for commands for what to do to boolean equation
     #print(boolean_equation)
 
