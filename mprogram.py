@@ -1,7 +1,6 @@
 import sys
 import sympy
 from sympy import *
-from sympy.logic.boolalg import to_dnf
 from sympy.logic import SOPform
 from sympy.logic import POSform
 
