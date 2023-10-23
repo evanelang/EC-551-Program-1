@@ -106,12 +106,23 @@ def evaluate_boolean_equation(boolean_equation):
                     
 
                 if yestracker == 1 and notracker == 0:
-                    finnum = (leftspot*columns) + rightspot
-                    print("term: ", term)
-                    print("Hit: ", (leftspot*columns) + rightspot)
-                    if finnum not in Minterms:
-                        Minterms.append(finnum)
-                    kmap[leftspot][rightspot] = 1
+                    if(Variables[-1] in term):
+                        
+                        finnum = (leftspot*columns) + rightspot
+                        if finnum % 2 != 0:
+                            print("term: ", term)
+                            print("Hit: ", (leftspot*columns) + rightspot)
+                            if finnum not in Minterms:
+                                Minterms.append(finnum)
+                            kmap[leftspot][rightspot] = 1
+                    else:
+                        finnum = (leftspot*columns) + rightspot
+                        print("term: ", term)
+                        print("Hit: ", (leftspot*columns) + rightspot)
+                        if finnum not in Minterms:
+                            Minterms.append(finnum)
+                        kmap[leftspot][rightspot] = 1
+                    
             cyclecount += 1
         #Minterms.append(Minterm)
     print(Minterms)
@@ -215,6 +226,67 @@ def prime_implicants(Variables, Minterms):
 
     return reduced_list
 
+def prime_implicants2(mysop):
+    newterms = []
+    implist = []
+    diff = 0
+    for term in mysop:
+        for term2 in mysop:
+            newterms = []
+            diff = 0
+            for char in term:
+                if char in term2:
+                    newterms.append(char)
+                else:
+                    diff += 1
+            if diff == 1:
+                if newterms not in implist:
+                    implist.append(newterms)
+    return implist
+def essential_implicants2(mysop):
+    newterms = []
+    implist = []
+    diff = 0
+    nomatch = 0
+    match1 = 0
+    nomatchlist = []
+    for term in mysop:
+        nomatch = 0
+        for term2 in mysop:
+            newterms = []
+            diff = 0
+            match1 = 0
+            if abs(len(term)-len(term2)) <= 1:
+                for char in term:
+                    if char in term2:
+                        newterms.append(char)
+                        match1 += 1
+                    else:
+                        match abs(len(term)-len(term2)):
+                            case 0:
+                                testchar = '!'+char
+                                if testchar in term2:
+                                    diff += 1
+                                else:
+                                    diff += 2
+                            case 1:
+                                diff += 1
+                if match1 == len(term)-1:
+                    if abs(len(term)-len(term2)) == 0:
+                        if diff == 1:
+                            if newterms not in implist:
+                                implist.append(newterms)
+                            nomatch = 1
+                    elif abs(len(term)-len(term2)) == 1:
+                        if diff == 0:
+                            if newterms not in implist:
+                                implist.append(newterms)
+                            nomatch = 1
+        if nomatch == 0:
+            if term not in nomatchlist:
+                nomatchlist.append(term)
+    return implist        
+                    
 
 
 # to be deleted. just using this for my own notes while I code.
@@ -359,7 +431,7 @@ if __name__ == '__main__':
     '''
     Dontcares = []
     truthtable, Minterms, Variables = evaluate_boolean_equation(boolean_equation)
-    mysop = SOPform(Variables, Minterms)
+    mysop = SOPform(Variables, Minterms, Dontcares)
     #invertminterms
     invmin = []
     biggestnum = (2**(len(Variables))) - 1
@@ -414,15 +486,24 @@ if __name__ == '__main__':
                 print(" minimized number of literals representation in POS",simplify_logic(mypos))
                 print("number of literals saved: ", numsave)
             case "7":
-                p_implicant= (prime_implicants(Variables, Minterms))
-                #count_lit= len(p_implicant)
-                print("reporting prime implicant",p_implicant, "count_lit:")
+                canonsop = SOP(Variables, Minterms)
+                p_implicant_first_order = (essential_implicants2(canonsop))
+                p_implicant_second_order = (essential_implicants2(p_implicant_first_order))
+                for term in p_implicant_second_order:
+                    if term not in p_implicant_first_order:
+                        p_implicant_first_order.append(term)
+                count_lit= len(p_implicant_first_order)
+                print("Prime implicants: ", p_implicant_first_order)
+                print("Number of prime implicants: ", count_lit)
                 
 
 
             case "8":
-                
-                print("counting essential prime implicant",essential_prime_implicants(Variables, Minterms, Dontcares))
+                canonsop = SOP(Variables, Minterms)
+                p_implicant_first_order = (essential_implicants2(canonsop))
+                p_implicant_second_order = (essential_implicants2(p_implicant_first_order))
+                print("Prime implicants: ", p_implicant_second_order)
+                print("Number of essential prime implicants: ",len(p_implicant_second_order))
             case "9":
 
                 print("Number of ON-Set minterms:", len(Minterms))
