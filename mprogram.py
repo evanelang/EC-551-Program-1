@@ -256,41 +256,21 @@ def essential_prime_implicants(Variables, Minterms, Dontcares):
     implicants = []
     for mymin in Minterms:
         curterm = []
-        ab_vars = []
-        cd_vars = []
-        for i in range(0, len(Variables), 2):
-            if mymin >= 2**(len(Variables) - Variables.index(Variables[i])-1):
-                ab_vars.append(Variables[i])
-                mymin = mymin - 2**(len(Variables) - Variables.index(Variables[i])-1)
+        for myvar in Variables:
+            if mymin >= 2**(len(Variables) - Variables.index(myvar)-1):
+                curterm.append(myvar)
+                mymin = mymin - 2**(len(Variables) - Variables.index(myvar)-1)
             else:
-                ab_vars.append('!' + Variables[i])
-            if i+1 < len(Variables):
-                if mymin >= 2**(len(Variables) - Variables.index(Variables[i+1])-1):
-                    cd_vars.append(Variables[i+1])
-                    mymin = mymin - 2**(len(Variables) - Variables.index(Variables[i+1])-1)
-                else:
-                    cd_vars.append('!' + Variables[i+1])
-        curterm.append("".join(ab_vars))
-        curterm.append("".join(cd_vars))
+                curterm.append('!' + myvar)
         implicants.append(curterm)
     for mymin in Dontcares:
         curterm = []
-        ab_vars = []
-        cd_vars = []
-        for i in range(0, len(Variables), 2):
-            if mymin >= 2**(len(Variables) - Variables.index(Variables[i])-1):
-                ab_vars.append(Variables[i])
-                mymin = mymin - 2**(len(Variables) - Variables.index(Variables[i])-1)
+        for myvar in Variables:
+            if mymin >= 2**(len(Variables) - Variables.index(myvar)-1):
+                curterm.append(myvar)
+                mymin = mymin - 2**(len(Variables) - Variables.index(myvar)-1)
             else:
-                ab_vars.append('!' + Variables[i])
-            if i+1 < len(Variables):
-                if mymin >= 2**(len(Variables) - Variables.index(Variables[i+1])-1):
-                    cd_vars.append(Variables[i+1])
-                    mymin = mymin - 2**(len(Variables) - Variables.index(Variables[i+1])-1)
-                else:
-                    cd_vars.append('!' + Variables[i+1])
-        curterm.append("".join(ab_vars))
-        curterm.append("".join(cd_vars))
+                curterm.append('!' + myvar)
         implicants.append(curterm)
     prime_implicants = []
     for implicant in implicants:
@@ -301,7 +281,7 @@ def essential_prime_implicants(Variables, Minterms, Dontcares):
     for implicant in prime_implicants:
         count = 0
         for mymin in Minterms:
-            if all(literal in implicant or ('!' + literal) in implicant for literal in [Variables[bit] if (1<<bit)&mymin else '!'+Variables[bit] for bit in range(len(Variables))] ):
+            if all(literal in implicant or literal[1:] in implicant for literal in [Variables[bit] if (1<<bit)&mymin else '!'+Variables[bit] for bit in range(len(Variables))] ):
                 count += 1
                 if mymin not in covered_minterms:
                     covered_minterms.append(mymin)
@@ -310,15 +290,20 @@ def essential_prime_implicants(Variables, Minterms, Dontcares):
         
     uncovered_minterms = set(Minterms + Dontcares) - set(covered_minterms)
     essential_prime_implicants += [ [Variables[bit] if (1<<bit)&mymin else '!'+Variables[bit] for bit in range(len(Variables))] for mymin in uncovered_minterms ]
-
+    '''
     # Check if there is at least one single 1 that cannot be covered any other way
     single_ones = [mymin for mymin in uncovered_minterms if bin(mymin).count('1') == 1]
     if single_ones:
         essential_prime_implicants.append([Variables[bit] if (1<<bit)&single_ones[0] else '!'+Variables[bit] for bit in range(len(Variables))])
-
+    '''
     # modify the return statement to print the implicants in the same format as prime_implicants
-    return ["".join([var for var in term]) for term in essential_prime_implicants]
+    return  essential_prime_implicants
 
+
+# essential
+#['AB!C!D', 'ABC!D', 'AB!CD', '!A!BCD', 'A!BCD', '!ABCD', 'ABCD']
+
+#[['A', 'B'], ['C', 'D']]
 
 
 # report the number off on set minterms
