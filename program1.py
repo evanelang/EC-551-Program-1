@@ -217,7 +217,7 @@ def prime_implicants(Variables, Minterms):
 
 
 
-
+# to be deleted. just using this for my own notes while I code.
 #cant concatenate lists
 #sequence item 0: expected str instance, list found
 
