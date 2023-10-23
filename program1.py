@@ -18,10 +18,10 @@ def evaluate_boolean_equation(boolean_equation):
     Variables = sorted(Variables)
     terms = []
     row =  (2**(len(Variables)//2))
-    print("row: ", row)
+    #print("row: ", row)
     
     columns = (2**((len(Variables)//2) + (len(Variables)%2)))
-    print("columns: ", columns)
+    #print("columns: ", columns)
     #Load Kmaps with zeros
     kmap = [[0 for x in range(columns)] for y in range(row)]
     for i in range(row):
@@ -110,22 +110,22 @@ def evaluate_boolean_equation(boolean_equation):
                         
                         finnum = (leftspot*columns) + rightspot
                         if finnum % 2 != 0:
-                            print("term: ", term)
-                            print("Hit: ", (leftspot*columns) + rightspot)
+                            #print("term: ", term)
+                            #print("Hit: ", (leftspot*columns) + rightspot)
                             if finnum not in Minterms:
                                 Minterms.append(finnum)
                             kmap[leftspot][rightspot] = 1
                     else:
                         finnum = (leftspot*columns) + rightspot
-                        print("term: ", term)
-                        print("Hit: ", (leftspot*columns) + rightspot)
+                        #print("term: ", term)
+                        #print("Hit: ", (leftspot*columns) + rightspot)
                         if finnum not in Minterms:
                             Minterms.append(finnum)
                         kmap[leftspot][rightspot] = 1
                     
             cyclecount += 1
         #Minterms.append(Minterm)
-    print(Minterms)
+    print("Truth Table: ")
     for h in range(row):
         print(kmap[h])
     return kmap, Minterms, Variables
@@ -289,7 +289,7 @@ def essential_implicants2(mysop):
         if nomatch == 0:
             if term not in matchlist:
                 implist.append(term)
-    print("matchlist: ", matchlist)
+    #print("matchlist: ", matchlist)
     return implist        
                     
 
@@ -447,11 +447,11 @@ if __name__ == '__main__':
             invmin.append(0)
 
     mypos = POSform(Variables, Minterms)
-    print("My SOP: ", mysop)
-    print("My POS: ", mypos)
-    for h in range(len(truthtable)):
-        print(truthtable[h])
-    print(SOPform(Variables, Minterms))
+    #print("My SOP: ", mysop)
+    #print("My POS: ", mypos)
+    #for h in range(len(truthtable)):
+        #print(truthtable[h])
+    #print(SOPform(Variables, Minterms))
     myexit = 0
     print("Command 12 exits program")
     commandin = input("What do you want to do to the boolean equation?: ")
