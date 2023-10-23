@@ -249,7 +249,7 @@ def essential_implicants2(mysop):
     diff = 0
     nomatch = 0
     match1 = 0
-    nomatchlist = []
+    matchlist = []
     for term in mysop:
         nomatch = 0
         for term2 in mysop:
@@ -276,15 +276,20 @@ def essential_implicants2(mysop):
                         if diff == 1:
                             if newterms not in implist:
                                 implist.append(newterms)
-                            nomatch = 1
+                                matchlist.append(term)
+                                matchlist.append(term2)
+                        nomatch = 1
                     elif abs(len(term)-len(term2)) == 1:
                         if diff == 0:
                             if newterms not in implist:
                                 implist.append(newterms)
-                            nomatch = 1
+                                matchlist.append(term)
+                                matchlist.append(term2)
+                        nomatch = 1
         if nomatch == 0:
-            if term not in nomatchlist:
-                nomatchlist.append(term)
+            if term not in matchlist:
+                implist.append(term)
+    print("matchlist: ", matchlist)
     return implist        
                     
 
@@ -489,9 +494,13 @@ if __name__ == '__main__':
                 canonsop = SOP(Variables, Minterms)
                 p_implicant_first_order = (essential_implicants2(canonsop))
                 p_implicant_second_order = (essential_implicants2(p_implicant_first_order))
-                for term in p_implicant_second_order:
-                    if term not in p_implicant_first_order:
-                        p_implicant_first_order.append(term)
+                p_implicant_third_order = (essential_implicants2(p_implicant_second_order))
+                for term2 in p_implicant_second_order:
+                    if term2 not in p_implicant_first_order:
+                        p_implicant_first_order.append(term2)
+                for term3 in p_implicant_third_order:
+                    if term3 not in p_implicant_second_order:
+                        p_implicant_second_order.append(term3)
                 count_lit= len(p_implicant_first_order)
                 print("Prime implicants: ", p_implicant_first_order)
                 print("Number of prime implicants: ", count_lit)
@@ -502,8 +511,9 @@ if __name__ == '__main__':
                 canonsop = SOP(Variables, Minterms)
                 p_implicant_first_order = (essential_implicants2(canonsop))
                 p_implicant_second_order = (essential_implicants2(p_implicant_first_order))
-                print("Prime implicants: ", p_implicant_second_order)
-                print("Number of essential prime implicants: ",len(p_implicant_second_order))
+                p_implicant_third_order = (essential_implicants2(p_implicant_second_order))
+                print("Prime implicants: ", p_implicant_third_order)
+                print("Number of essential prime implicants: ",len(p_implicant_third_order))
             case "9":
 
                 print("Number of ON-Set minterms:", len(Minterms))
