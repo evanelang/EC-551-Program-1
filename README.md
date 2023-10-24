@@ -46,12 +46,12 @@ In order for this program to work, you will need to install either one of the fo
         or navigate to the Sympy library [https://docs.sympy.org/latest/install.html#installation](https://) and follow the instructions there.
 
 once the package is downloaded and is working; import the following from the SymPy library:
-        ```console
+        
         ```python
         from sympy.logic import SOPform
         from sympy.logic import POSform
         ```
-        ```
+        
 in your file. or simple download our program1.py file.
 
 To use this program, download the file program1.py and run it in your operating system using any test editor. subjective to copyrights.
