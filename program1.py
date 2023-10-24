@@ -7,7 +7,8 @@ from sympy.logic import POSform
 
 
 
-# takes boolean equation as input and returns a truth table for that equation
+# takes boolean equation as input and returns a truth table for that equation, a list of variables, and the minterms
+#WILL ALWAYS RUN
 def evaluate_boolean_equation(boolean_equation):
     # Implementing a stack to evaluate the boolean equation
     Variables = []
@@ -131,7 +132,7 @@ def evaluate_boolean_equation(boolean_equation):
     return kmap, Minterms, Variables
 
 #takes the minterms and variables of a boolean equation and returns the SOP in canonical form
-#takes the minterms and variables of a boolean equation and returns the SOP in canonical form
+#USED
 def SOP(Variables, Minterms):
     newterms = []
     for mymin in Minterms:
@@ -148,7 +149,7 @@ def SOP(Variables, Minterms):
 
 
 
-
+#NOT USED#######################################################################################
 #report the number of prime Implicants
 #the function prime implicant takes two argument: variables and minterms
     #initalizes an empty list to be updates
@@ -225,24 +226,9 @@ def prime_implicants(Variables, Minterms):
             reduced_list.append(combined_literal)
 
     return reduced_list
+############################################################################################
 
-def prime_implicants2(mysop):
-    newterms = []
-    implist = []
-    diff = 0
-    for term in mysop:
-        for term2 in mysop:
-            newterms = []
-            diff = 0
-            for char in term:
-                if char in term2:
-                    newterms.append(char)
-                else:
-                    diff += 1
-            if diff == 1:
-                if newterms not in implist:
-                    implist.append(newterms)
-    return implist
+#FINDS THE NEXT ORDER OF PRIME IMPLICANTS - USED
 def essential_implicants2(mysop):
     newterms = []
     implist = []
@@ -264,11 +250,17 @@ def essential_implicants2(mysop):
                     else:
                         match abs(len(term)-len(term2)):
                             case 0:
-                                testchar = '!'+char
-                                if testchar in term2:
+                                testcharlow = '!'+char
+                                testcharhigh = char[1:]
+                                if testcharlow in term2:
+                                    diff += 1
+                                elif testcharhigh in term2:
                                     diff += 1
                                 else:
                                     diff += 2
+                                    #print("testchar: ", char)
+                                    #print("term2: ", term2)
+                                    #print("term: ", term)
                             case 1:
                                 diff += 1
                 if match1 == len(term)-1:
@@ -278,48 +270,22 @@ def essential_implicants2(mysop):
                                 implist.append(newterms)
                                 matchlist.append(term)
                                 matchlist.append(term2)
-                        nomatch = 1
+                            nomatch = 1
                     elif abs(len(term)-len(term2)) == 1:
-                        if diff == 0:
+                        if diff == 1:
                             if newterms not in implist:
                                 implist.append(newterms)
                                 matchlist.append(term)
                                 matchlist.append(term2)
-                        nomatch = 1
+                            nomatch = 1
         if nomatch == 0:
             if term not in matchlist:
-                implist.append(term)
-    #print("matchlist: ", matchlist)
+                if term not in implist:
+                    #print("nomatchterm: ", term)
+                    implist.append(term)
+    #print("matchlist: ", implist)
     return implist        
-                    
-
-
-# to be deleted. just using this for my own notes while I code.
-#cant concatenate lists
-#sequence item 0: expected str instance, list found
-
-# reduced list ignoring !
-#['ABCD', 'ABC', 'ABD', 'ACD', 'BCD']
-
-# last code
-#['ABCD', '!ABCD', 'ABC', 'ABD', '!ACD', 'BCD']
-#with outignore
-#['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C!', 'AB!!D', 'AB!D', 'ABC!', '!A!CD', '!!BCD'].
-#['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C', 'AB!D', 'ABC', '!A!CD', '!BCD']
-#['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C!', 'AB!D', 'ABC!', '!A!CD', '!BCD']
-#['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C', 'AB!D', 'ABC', '!A!CD', '!BCD']
-
-#righ now code: ['AB!C!D', 'AB!CD', 'ABC!D', 'ABCD', '!A!BCD', '!ABCD', 'A!BCD', 'AB!C', 'AB!D', 'ABC', '!A!CD', '!BCD'}
-
-
-
-#[['A', 'B', '!C', '!D'], ['A', 'B', '!C', 'D'], ['A', 'B', 'C', '!D'], 
-# ['A', 'B', 'C', 'D'], ['!A', '!B', 'C', 'D'], 
-# ['!A', 'B', 'C', 'D'], 
-# ['A', '!B', 'C', 'D'], 'A']
-
-
-
+#Counts literals in a boolean equation              
 def literal_count(equation):
     Variables = []
     for char in equation:
@@ -329,7 +295,7 @@ def literal_count(equation):
 
 
 
-# essential prime implicants
+# NOT USED essential prime implicants ##############################################################################################################
 def essential_prime_implicants(Variables, Minterms, Dontcares):
     implicants = []
     for mymin in Minterms:
@@ -378,7 +344,7 @@ def essential_prime_implicants(Variables, Minterms, Dontcares):
     return [" ".join([var if var[0] != '!' else var[1]+'\''
                      for var in str(term)]) for term in essential_prime_implicants]
 
-
+####################################################################################################################################################
 
 # report the number off on set minterms
 def ON_Set(Variables, Minterms):
@@ -391,6 +357,7 @@ def ON_Set(Variables, Minterms):
                 if minterm not in ON_Set_minterms:
                     ON_Set_minterms.append(minterm)
     return len(ON_Set_minterms)
+#report the number of on set maxterms
 def ON_Set_Max(Variables, Minterms):
     ON_Set_maxterms = []
     for i in range((2**len(Variables))-1):
@@ -398,6 +365,7 @@ def ON_Set_Max(Variables, Minterms):
             ON_Set_maxterms.append(i)
 
     return(ON_Set_maxterms)
+#builds a nice looking SOP boolean equation from a list of terms for printing
 def build_canon_sop(canonsop):
     finstring = ""
     for term in canonsop:
@@ -409,6 +377,7 @@ def build_canon_sop(canonsop):
         finstring += ")+"
     finstring = finstring[:-1]
     return(finstring)
+#builds a nice looking POS boolean equation from a list of terms for printing
 def build_canon_pos(canonsop):
     finstring = ""
     for term in canonsop:
@@ -437,7 +406,7 @@ if __name__ == '__main__':
     Dontcares = []
     truthtable, Minterms, Variables = evaluate_boolean_equation(boolean_equation)
     mysop = SOPform(Variables, Minterms, Dontcares)
-    #invertminterms
+    #invert minterms
     invmin = []
     biggestnum = (2**(len(Variables))) - 1
     for i in range(biggestnum):
@@ -447,13 +416,22 @@ if __name__ == '__main__':
             invmin.append(0)
 
     mypos = POSform(Variables, Minterms)
-    #print("My SOP: ", mysop)
-    #print("My POS: ", mypos)
-    #for h in range(len(truthtable)):
-        #print(truthtable[h])
-    #print(SOPform(Variables, Minterms))
+
     myexit = 0
+    #The following is the menu for the program
+    print("Command 1 returns the canonical SOP")
+    print("Command 2 returns the canonical POS")
+    print("Command 3 returns the canonical inverse SOP")
+    print("Command 4 returns the canonical inverse POS")
+    print("Command 5 returns the minimized number of literals representation in SOP")
+    print("Command 6 returns the minimized number of literals representation in POS")
+    print("Command 7 returns the prime implicants")
+    print("Command 8 returns the essential prime implicants")
+    print("Command 9 returns the number of ON-Set minterms")
+    print("Command 10 returns the number of ON-Set Maxterms")
+    print("Command 11 returns all variables in entry")
     print("Command 12 exits program")
+    #The main loops, waiting for more commands until the user exits
     commandin = input("What do you want to do to the boolean equation?: ")
     while myexit != 1:
         match commandin:
@@ -491,6 +469,7 @@ if __name__ == '__main__':
                 print(" minimized number of literals representation in POS",simplify_logic(mypos))
                 print("number of literals saved: ", numsave)
             case "7":
+                #Compiles all first second and third order prime implicants
                 canonsop = SOP(Variables, Minterms)
                 p_implicant_first_order = (essential_implicants2(canonsop))
                 p_implicant_second_order = (essential_implicants2(p_implicant_first_order))
@@ -508,6 +487,7 @@ if __name__ == '__main__':
 
 
             case "8":
+                #reports only the essential prime implicants
                 canonsop = SOP(Variables, Minterms)
                 p_implicant_first_order = (essential_implicants2(canonsop))
                 p_implicant_second_order = (essential_implicants2(p_implicant_first_order))
@@ -528,10 +508,3 @@ if __name__ == '__main__':
         if(commandin != 12):
             commandin = input("What do you want to do to the boolean equation?: ")
     print("Program exited")
-    #Check
-    #ask for commands for what to do to boolean equation
-    #print(boolean_equation)
-
-    #changes made / modified case 4 such as to put _ to ignore 
-    # the second value in the tuple. modified case 2; 
-    # for simplify parameter, set it to false for POS and true for SOP
