@@ -47,10 +47,10 @@ In order for this program to work, you will need to install either one of the fo
 
 once the package is downloaded and is working; import the following from the SymPy library:
         
-        ```python
+        
         from sympy.logic import SOPform
         from sympy.logic import POSform
-        ```
+        
         
 in your file. or simple download our program1.py file.
 
