@@ -1,4 +1,5 @@
 
+```javascript
 # EC-551-Program-1
 # Logic Synthesis Engine
 
@@ -59,9 +60,10 @@ To use this program, download the file program1.py and run it in your operating 
 
 ## **Authors:**
 
-This project is completed as part of the Advanced Digital Design with Verilog and FPGA(EC 551) class at Boston university. Class is taugh by professor Douglas Densmore.
+This project is completed as part of the Advanced Digital Design with Verilog and FPGA(EC 551) class at Boston university. Class is taught by professor Douglas Densmore.
 
 This project is completed by the following students(authors)
 
     copyright   Evan  Lang      evanlang@bu.edu
     copyright   Mayra Texeira   msteixei@bu.edu  
+```
