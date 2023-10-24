@@ -3,7 +3,7 @@
 # Logic Synthesis Engine
 
 
-**Description**
+## **Description**
 
 This project is designed to perform a logic synthesis calculation. It will prompt the user to enter the Boolean algebraic function(s) as strings, and then the function will be optmized via a variety of objective functions. This programming will ouput the result on the screen.
 
@@ -34,7 +34,7 @@ This program uses SymPY library for further simplifcation of the variables, mint
 The rest of the code are performed by the functions that we built.
 
 
-**Installation**
+## **Installation**
 
 In order for this program to work, you will need to install either one of the following packages:
 
@@ -57,7 +57,7 @@ in your file. or simple download our program1.py file.
 To use this program, download the file program1.py and run it in your operating system using any test editor. subjective to copyrights.
 
 
-**Authors:**
+## **Authors:**
 
 This project is completed as part of the Advanced Digital Design with Verilog and FPGA(EC 551) class at Boston university. Class is taugh by professor Douglas Densmore.
 
