@@ -38,12 +38,12 @@ The rest of the code are performed by the functions that we built.
 
 In order for this program to work, you will need to install either one of the following packages:
 
-    Step1:
-        navigate to the Anaconda url: https://www.anaconda.com/download and follow instructions there depending on your operating system. Anaconda is a free python distribution that comes with the SymPy library.
+Step1: navigate to the Anaconda url and follow instructions there depending on your operating system. Anaconda is a free python distribution that comes with the SymPy library.
+        https://www.anaconda.com/download 
 
-    Step2:
 
-        or navigate to the Sympy library [https://docs.sympy.org/latest/install.html#installation](https://) and follow the instructions there.
+Step2:or navigate to the Sympy library url and follow the instructions there.
+            [https://docs.sympy.org/latest/install.html#installation] 
 
 once the package is downloaded and is working; import the following from the SymPy library:
         
