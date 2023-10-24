@@ -56,6 +56,22 @@ in your file. or simple download our program1.py file.
 
 To use this program, download the file program1.py and run it in your operating system using any test editor. subjective to copyrights.
 
+## Contributing
+
+we welcome any Feedbacks and contributions.
+If you want to contribute to this project, follow these steps:
+
+Fork this repository.
+Create a new branch: git checkout -b new-feature
+Make your changes and commit them: git commit -am 'Add new feature'
+Push to the branch: git push origin new-feature
+Submit a pull request.
+
+Alternatively see this webiste on how to pull request:
+
+    https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
+
+
 
 ## **Authors:**
 
