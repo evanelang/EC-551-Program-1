@@ -66,6 +66,3 @@ This project is completed by the following students(authors)
     copyright   Evan  Lang      evanlang@bu.edu
     copyright   Mayra Texeira   msteixei@bu.edu  
 
-Badge
-
-https://img.shields.io/github/all-contributors/:user/:repo
