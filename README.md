@@ -1,5 +1,4 @@
 
-```javascript
 # EC-551-Program-1
 # Logic Synthesis Engine
 
@@ -66,4 +65,3 @@ This project is completed by the following students(authors)
 
     copyright   Evan  Lang      evanlang@bu.edu
     copyright   Mayra Texeira   msteixei@bu.edu  
-```
