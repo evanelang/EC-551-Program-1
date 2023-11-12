@@ -1,0 +1,27 @@
+from program1 import truthtable # in progress turth table== kmap
+
+class FPGA(truthtable):
+
+    #create a constructor
+    #a. A list of functions assigned to the LUTs
+    #a. You should be able to show all the LUT assignments
+    #b. You should be able to selectively show individual LUT assignments
+    def __init__(self,num_LUTs):
+        self.num_LUTs= num_LUTs
+        #create a dictionary
+        self.LUTs_function={}
+
+
+    def function_assign(self,truthtable, index):
+        #compared of index is less than 1 and greater than numbers of LUT
+        # get the logical expression from the truth table entries
+        if index < 0 or index >self.num_LUTs:
+            print("Invalid")
+            return
+        else:
+            logic_function=self.truthtable_to_logic_function(truthtable)
+            self.LUTs_function= logic_function
+    
+    def truthtable_to__logic_function():
+        pass
+        
