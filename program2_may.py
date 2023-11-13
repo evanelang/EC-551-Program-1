@@ -59,9 +59,9 @@ def synthesize(boolean_expression, lut_size):
         lut_vars = variables[i*num_functions_per_lut:(i+1)*num_functions_per_lut]
         lut_func = lut_functions[i]
         lut_assignments.append((output,lut_vars, lut_func))
-        print(lut_assignments)
+        
 
-    #return lut_assignments
+    return lut_assignments
 
 if __name__ == '__main__':
     runprog = 0
