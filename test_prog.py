@@ -36,7 +36,7 @@ if __name__ == '__main__':
                         Variables.append(subber)
                         varmaker = varmaker.replace(subber, ' ')
                 for char in varmaker:
-                    if char not in ['(',')','+','*','!','&','|', ' ']:
+                    if char not in ['(',')','+','*','!','&','|', ' ', '~']:
                         if char not in Variables:
                             Variables.append(char)
                 Variables = sorted(Variables)
@@ -44,8 +44,9 @@ if __name__ == '__main__':
                 myoutputs[myout]['Variables'] = Variables
                 myoutputs[myout]['RAWEquation'] = a[1]
                 bool2 = sympify(a[1])
-                mytruth = truth_table(bool2, Variables, input=False)
-                myoutputs[myout]['Equation'] = bool2
+                bool3 = simplify_logic(bool2)
+                mytruth = truth_table(bool3, Variables, input=False)
+                myoutputs[myout]['Equation'] = bool3
                 newtruth = []
                 x = 0
                 for t in mytruth:
@@ -53,6 +54,6 @@ if __name__ == '__main__':
                     x += 1
                 myoutputs[myout]['TruthTable'] = newtruth
                 #print(myoutputs)
-            case "2":
+            case "12":
                 break
     print(myoutputs)
