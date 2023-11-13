@@ -15,36 +15,12 @@ def processEq(booleanexpr, Vars):
 
 
 
-if __name__ == '__main__':
-    boolean_equation = input('What is the boolean equation?')
-    Variables = []
-    myoutputs = {}
-    
-    a = boolean_equation.split('=')
-    myout = a[0]
-    for char in a[1]:
-        if char not in ['(',')','+','*','!','&','|', ' ']:
-            if char not in Variables:
-                Variables.append(char)
-    Variables = sorted(Variables)
-    myoutputs[myout] = {}
-    myoutputs[myout]['Variables'] = Variables
-    myoutputs[myout]['Equation'] = a[1]
-    bool2 = sympify(a[1])
-    mytruth = truth_table(bool2, Variables, input=False)
-    
-    newtruth = []
-    x = 0
-    for t in mytruth:
-        newtruth.append(t)
-        x += 1
-    myoutputs[myout]['TruthTable'] = newtruth
-    print(myoutputs)
+
 
 
     #trying to do part a
 
-    def synthesize(boolean_expression, lut_size):
+def synthesize(boolean_expression, lut_size):
         # Step 1: Parse the boolean expression and extract the variables and the output.
 
         boolean_expression = input("Enter a boolean expression: ")
@@ -84,6 +60,50 @@ if __name__ == '__main__':
             lut_assignments.append((lut_vars, lut_func))
             #using formats
         print('LUT {}: {} = {}'.format(i, lut_vars, lut_func))
+
+if __name__ == '__main__':
+    #boolean_equation = input('What is the boolean equation?')
+
+    runprog = 0
+    NonsingleVars = []
+    myoutputs = {}
+    while(runprog != 1):
+        commandin = input('What would you like to do?')
+        match commandin:
+            case "1":
+                runprog = 0
+                Variables = []
+                boolean_equation = input('What is the boolean equation?') 
+                a = boolean_equation.split('=')
+                myout = a[0]
+                varmaker = a[1]
+                NonsingleVars.append(myout)
+                for subber in NonsingleVars:
+                    if subber in varmaker:
+                        Variables.append(subber)
+                        varmaker = varmaker.replace(subber, ' ')
+                for char in varmaker:
+                    if char not in ['(',')','+','*','!','&','|', ' ', '~']:
+                        if char not in Variables:
+                            Variables.append(char)
+                Variables = sorted(Variables)
+                myoutputs[myout] = {}
+                myoutputs[myout]['Variables'] = Variables
+                myoutputs[myout]['RAWEquation'] = a[1]
+                bool2 = sympify(a[1])
+                bool3 = simplify_logic(bool2)
+                mytruth = truth_table(bool3, Variables, input=False)
+                myoutputs[myout]['Equation'] = bool3
+                newtruth = []
+                x = 0
+                for t in mytruth:
+                    newtruth.append(t)
+                    x += 1
+                myoutputs[myout]['TruthTable'] = newtruth
+                #print(myoutputs)
+            case "12":
+                break
+    print(myoutputs)
       
 
 
