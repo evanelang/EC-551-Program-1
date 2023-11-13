@@ -90,20 +90,32 @@ if __name__ == '__main__':
                 myoutputs[myout] = {}
                 myoutputs[myout]['Variables'] = Variables
                 myoutputs[myout]['RAWEquation'] = a[1]
+                varlen = len(Variables)
+                LUTLIST = []
+                while(varlen > 0):
+                    if (varlen - 6) > 0:
+                     LUTLIST.append(myout + "_LUT6")
+                     varlen -= 6
+                    elif (varlen - 4) > 0:
+                     LUTLIST.append(myout + "_LUT6")
+                     varlen -= 4
+                    if (varlen <= 4):
+                     if varlen > 0:
+                        LUTLIST.append(myout + "_LUT4")
+                        varlen = 0
                 bool2 = sympify(a[1])
                 bool3 = simplify_logic(bool2)
                 mytruth = truth_table(bool3, Variables, input=False)
+                myoutputs[myout]['LUTS'] = LUTLIST
                 myoutputs[myout]['Equation'] = bool3
                 newtruth = []
                 x = 0
                 for t in mytruth:
                     newtruth.append(t)
                     x += 1
-                myoutputs[myout]['TruthTable'] = newtruth
+                myoutputs[myout]['LUT_LOAD'] = newtruth
                 #print(myoutputs)
             case "12":
                 break
     print(myoutputs)
-      
-
 
