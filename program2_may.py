@@ -59,35 +59,36 @@ def synthesize(boolean_expression, lut_size):
     # Step 6: Create a list that associates each LUT with its assigned logic function.
     lut_assignments = []
     for i in range(num_luts):
-        lut_vars = variables[i*num_functions_per_lut:(i+1)*num_functions_per_lut]
-        lut_func = lut_functions[i]
-        lut_assignments.append((output,lut_vars, lut_func))
+        if i < len(lut_functions):
+            lut_vars = variables[i*num_functions_per_lut:(i+1)*num_functions_per_lut]
+            lut_func = lut_functions[i]
+            lut_assignments.append((output,lut_vars, lut_func))
         
 
     return lut_assignments
 
 #trying to do part d bitstream for the program
 #just a template for the bitstream function
-def bitstream(lut_assignments, bitstream_file_path):
+#def bitstream(lut_assignments, bitstream_file_path):
     # Initialize an empty list
-    bitstream = []
+    #bitstream = []
     # For each lut in lut_assignments
-    for lut in lut_assignments:
+    #for lut in lut_assignments:
         # If the lut function is true
-        if lut[2] == True:
+        #if lut[2] == True:
             # Append 1 to the bitstream
-            bitstream.append('1')
+            #bitstream.append('1')
         # If the lut function is false
-        elif lut[2] == False:
+        #elif lut[2] == False:
             # Append 0 to the bitstream
-            bitstream.append('0')
+           # bitstream.append('0')
         # If the lut function is not true or false
-        else:
+        #else:
             # Append 1 to the bitstream
-            bitstream.append('1')
+            #bitstream.append('1')
     # Write the bitstream to a file
-    with open(bitstream_file_path, 'w') as f:
-        f.write(''.join(bitstream))
+    #with open(bitstream_file_path, 'w') as f:
+        #f.write(''.join(bitstream))
 
 # Example usage
 #lut_assignments = [...] # List of LUT assignments
