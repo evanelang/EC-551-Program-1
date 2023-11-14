@@ -10,7 +10,10 @@ import math
 
 
 
-
+def processEq(booleanexpr, Vars):
+    if(len(Vars) == 4):
+        print("HI")
+    return 0
 
 def synthesize(boolean_expression, lut_size):
     # Step 1: Parse the boolean expression and extract the variables and the output.
@@ -62,6 +65,35 @@ def synthesize(boolean_expression, lut_size):
         
 
     return lut_assignments
+
+#trying to do part d bitstream for the program
+#just a template for the bitstream function
+def bitstream(lut_assignments, bitstream_file_path):
+    # Initialize an empty list
+    bitstream = []
+    # For each lut in lut_assignments
+    for lut in lut_assignments:
+        # If the lut function is true
+        if lut[2] == True:
+            # Append 1 to the bitstream
+            bitstream.append('1')
+        # If the lut function is false
+        elif lut[2] == False:
+            # Append 0 to the bitstream
+            bitstream.append('0')
+        # If the lut function is not true or false
+        else:
+            # Append 1 to the bitstream
+            bitstream.append('1')
+    # Write the bitstream to a file
+    with open(bitstream_file_path, 'w') as f:
+        f.write(''.join(bitstream))
+
+# Example usage
+#lut_assignments = [...] # List of LUT assignments
+#bitstream_file_path = "example.bit"
+#bitstream(lut_assignments, bitstream_file_path)
+
 
 if __name__ == '__main__':
     runprog = 0
