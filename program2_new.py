@@ -130,6 +130,7 @@ if __name__ == '__main__':
                 luteq = ""
                 usedvars = []
                 for term in eqsplit:
+                    print(term)
                     varsintermcount = 0
                     editterm = term
                     for otherouts in NonsingleVars:
@@ -155,17 +156,21 @@ if __name__ == '__main__':
                     if varcount > lutsize:
                         myoutputs[myout]['LUTS'][myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = luteq[:-3]
                         luteq = myout + "_LUT" + str(lutsize) + "_" + str(lutcount) + " | "
-                        varcount -= (lutsize - 1) 
+                        usedvars = usedvars[-varsintermcount:]
+                        varcount = varsintermcount + 1
                         lutcount += 1
+                        print("HIT")
                     if varcount < lutsize:
                         luteq += term + " | "
                     if varcount == lutsize:
                         luteq += term + " | "
+                        
                         #myoutputs[myout]['LUTS'][myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = luteq
                         #luteq = myout + "_LUT" + str(lutsize) + "_" + str(lutcount) + " | "
                         #lutcount += 1
                         #varcount = 1
-               
+                    print(usedvars)
+                    print(varcount)
                 myoutputs[myout]['LUTS'][myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = luteq[:-3]
                 myoutputs[myout]['lutcount'] = lutcount
                         
