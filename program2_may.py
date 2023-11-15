@@ -16,15 +16,14 @@ def processEq(booleanexpr, Vars):
     return 0
 
 def synthesize(boolean_expression, lut_size):
-    # Step 1: Parse the boolean expression and extract the variables and the output.
-    variables = sorted(set(filter(str.isalpha, boolean_expression)))
-
-    output = boolean_expression.split('=')[0]
+    # Step 1: Parse the boolean expression and extract the variables.
+    variables = myoutputs[myout]['Variables']
+    print("variables",variables)
 
     # Step 2: Determine the number of LUTs required based on the number of variables and the size of the LUT.
     num_functions = 2 ** (2 ** len(variables))  # Total number of boolean functions
-    num_functions_per_lut = 2 ** (2 ** lut_size)  # Number of functions each LUT can represent
-    num_luts = num_functions // num_functions_per_lut  # Number of LUTs required
+    num_luts = int(num_functions / lut_size)  # Number of LUTs required
+    print(num_luts)
 
     # Step 3: Generate the truth table for the boolean expression.
     tt = []
@@ -32,13 +31,10 @@ def synthesize(boolean_expression, lut_size):
         tt.append(bool(val))
 
     # Step 4: Group the truth table into groups of size equal to the size of the LUT.
-    #group the truth table based on number of input combinations each LUT can handle.
     groups = []
     for i in range(0, len(tt), 2 ** lut_size):
         groups.append(tt[i:i + 2 ** lut_size])
 
-
-  
     # Step 5: For each group, determine the logic function that maps to the LUT.
     lut_functions = []
     for group in groups:
@@ -60,10 +56,11 @@ def synthesize(boolean_expression, lut_size):
     lut_assignments = []
     for i in range(num_luts):
         if i < len(lut_functions):
-            lut_vars = variables[i*num_functions_per_lut:(i+1)*num_functions_per_lut]
+            lut_vars = variables[:lut_size]  # Assign the first 'lut_size' variables to the LUT
             lut_func = lut_functions[i]
-            lut_assignments.append((output,lut_vars, lut_func))
-        
+            lut_assignments.append((f'LUT{i}', lut_vars, lut_func))
+
+    print(lut_assignments)
 
     return lut_assignments
 
@@ -135,11 +132,21 @@ if __name__ == '__main__':
                 myoutputs[myout]['TruthTable'] = newtruth
             case "2":
                 lut_size = int(input('Enter the size of the LUT: '))
-                for output, details in myoutputs.items():
-                    boolean_expression = output + '=' + str(details['Equation'])
+                for details in myoutputs.keys():
+                    boolean_expression =myoutputs[details]['Equation']
                     lut_assignments = synthesize(boolean_expression, lut_size)
-                    for i, (lut_vars, lut_func) in enumerate(lut_assignments):
-                        print('LUT {}: {} = {}'.format(i, lut_vars, lut_func))
+                #print('LUT Assignments:', lut_assignments)
+                    for i, (lut_name, lut_vars, lut_func) in enumerate(lut_assignments):
+                        print('LUT  {} : {} = {}'.format(lut_name, lut_vars, lut_func))
+                    lut_dict = {}
+                    for i, lut in enumerate(lut_assignments):
+                        lut_name, lut_vars, _ = lut
+                        for var in lut_vars:
+                            lut_dict[f'{lut_name}_{var}'] = var
+
+                    print(lut_dict)
+
+                    
             case "12":
                 runprog = 1
     print(myoutputs)
