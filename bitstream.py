@@ -79,7 +79,7 @@ if __name__ == '__main__':
                         newtruth.append(0)
                     x += 1
                 bool3 = SOPform(Variables, minterms)
-                myoutputs[myout]['Equation'] = bool3
+                myoutputs[myout]['Equation'] = str(bool3)
                 myoutputs[myout]['LUT_LOAD'] = newtruth
                 myoutputs[myout]['Minterms'] = minterms
                 lutsize = int(input("What size should the LUTS be?"))
@@ -134,61 +134,18 @@ if __name__ == '__main__':
                 myoutputs[myout]['LUTS'][myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = luteq[:-3]
                 myoutputs[myout]['lutcount'] = lutcount
                         
-            case 2:
-                
-                try:
-                    
-                    bitstream = {}
-                    for myout in myoutputs:
-                        luts = myoutputs[myout]['LUTS']
-                        bitstream[myout] =  luts 
-
-                    directory = "EC-551-Program-1"  # replace with your local repository path
-                    filename = 'bitstream'
-
-                    # Create the directory if it doesn't exist
-                    os.makedirs(directory, exist_ok=True)
-
-                    #check if directory exists exists
-                    if not os.path.exists(directory):
-                        os.makedirs(directory)
-                        print(f'Directory {directory} created.')
-                    else:
-                        print(f'Directory {directory} already exists.')
-
-                    # Write the bitstream dictionary to a JSON file in the specified directory
-                    filePathNameWExt = os.path.join(directory, filename + '.json')
-                    with open(filePathNameWExt, 'w') as outfile:
-                        json.dump(bitstream, outfile, indent=4)
-
-                    print(f"Bitstream file created at {filePathNameWExt}")
-
-                    os.startfile(filePathNameWExt)
-
-                    logging.info("Bitstream generated successfully.")
-
-                except Exception as e:
-                    print(f"An error occurred while generating the bitstream: {e}")
-                
+            case "2":
+                    with open("bitstream.json", 'w') as outfile:
+                        json.dump(myoutputs, outfile)
+                        
             case "3":
-                #open json file
-                directory = "EC-551-Program-1" # please replace with your path
-                filename = 'bitstream'
-                filePathNameWExt = os.path.join(directory, filename + '.json')
-                with open(filePathNameWExt) as json_file:
-                    data = json.load(json_file)
-                print(data)
-                print(type(data))
-                #print("Which output would you like to see?")
-                #for out in data:
-                    #print(out)
-                outin = input("Output:")
-                print(data[outin])
-                print("Which LUT would you like to see?")
-                for lut in data[outin]:
-                    print(lut)
-                lutin = input("LUT:")
-                print(data[outin][lutin])
+                with open("bitstream.json", 'r') as outfile:
+                    myoutputs = json.load(outfile)
+                print(myoutputs)
+                print(type(myoutputs))
+            
+                    
+           
 
 
 
