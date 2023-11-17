@@ -139,16 +139,10 @@ if __name__ == '__main__':
                 try:
                     
                     bitstream = {}
-
-                    # Iterate over the outputs in the myoutputs dictionary
                     for myout in myoutputs:
-                    # Get the LUT assignments for this output
                         luts = myoutputs[myout]['LUTS']
-
-                    # Add the LUT assignments to the bitstream dictionary
                         bitstream[myout] =  luts 
 
-                    # Define the directory and filename
                     directory = "EC-551-Program-1"  # replace with your local repository path
                     filename = 'bitstream'
 
