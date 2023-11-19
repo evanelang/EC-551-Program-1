@@ -237,90 +237,54 @@ if __name__ == '__main__':
                 total_memory = 0
                 total_input_mem=0
                 total_lutsizes=0
-                #to count the number of unique variables in each lut
-                unique_variables_per_lut = {}
-                #to create a master list of all luts in the equation
-                master_lut_list = []
-                unwanted_chars= ['(',')','+','*','!','&','|', ' ', '~', "_", "-"]
+                total_connections = 0
 
-                # Iterate over all outputs
-              
-                for myout in myoutputs:
-                    luts = myoutputs[myout]['LUTS']
-                    lutsize = myoutputs[myout]['lutsize']
-                    variables = myoutputs[myout]['Variables']
-                    master_lut_list.extend(luts)
-                    #print(f"Variables for output {myout}: {variables}")  # Debugging line
+                for myout in master_lut_dict.keys():
+                    #luts=master_lut_dict[myout]['LUTS']
+                    
+                    
+                    #luts = master_lut_dict[myout]['LU']
+                    lutsize = master_lut_dict[myout]["LUT_Size"]
+                    print("lutsize",lutsize)
+                    variables = master_lut_dict[myout]["Variables"]
+                    print("variables",variables)
+                    total_luts_count= len(master_lut_dict.keys())
+                    print("total_luts_count",total_luts_count)
+                    connections_for_luts = len(master_lut_dict[myout]["Connected_LUTS"])
+                    print("connections_for_luts",connections_for_luts) # !!!debugging error starting here
 
                 # Iterate over all LUTs
-  
-                    for lut in luts:
-                        lut_parts= lut.split("_")
-                              
-                        lut_parts = lut.split("_")
-                        if len(lut_parts) > 1:
-                            lut_name = lut_parts[1]
-                            if not any(char in lut_name for char in unwanted_chars) and lut_name not in variables:
-                                master_lut_list.append(lut_name)
-                    master_lut_list = list(set(master_lut_list))    
+                    #for lut in master_lut_dict.keys():
+                    #for var in variables:
+                            #if var in master_lut_dict[lut]:
+                    total_input_mem += 2 ** len(variables)
+                    total_lutsizes += 2 ** lutsize
+                    total_variables += len(variables)         
+                    total_connections += connections_for_luts
+                    print("total",total_connections)
+                luts_required= total_variables/total_lutsizes
+                memory_percentage=(2**total_input_mem)*total_luts_count
+                #pecentage of fpga luts that are not connected...
                     
-
-                    for lut in luts:
-                        if lut in master_lut_list:
-                           if lut not in unique_variables_per_lut:
-                                unique_variables_per_lut[lut] = set()
-
-                        for var in variables:
-                            #if var not in master_lut_list:
-                                #unique_variables_per_lut[lut].add(var)
-                            if var in luts[lut]:
-                                total_input_mem += 2 ** len(variables)
-                                #print('total_input_mem', total_input_mem)
-                                total_lutsizes += 2 ** lutsize
-                                
-
-
-                                
-                            total_luts += len(luts)
-                            total_variables += len(variables)
-                                #total_lutsize += lutsize * len(luts)
-                            total_connections += len(luts) 
-                                #mem_per_lut= len(luts)*(2 ** lutsize)
-                                #total_memory += mem_per_lut
-                    luts_required= total_variables/total_lutsizes
-                    memory_percentage=(total_input_mem/total_lutsizes)
-                
-                            
                     #if lutsize == len(variables):
                         #print(f"LUT size matches the number of variables for output {myout} and LUT {lut}")
                     #else:
                         #print(f"LUT size does not match the number of variables for output {myout} and LUT {lut}")
-
-                #mem_per_lut= 2** lutsize #poss combinations
-                #function_s= 2** mem_per_lut
-
-                #total_luts += len(luts)
-                #total_variables += len(variables)           # 8 inputs can be represe.. with 3 total luts
-                #total_lutsize += lutsize * len(luts)  
-                #total_connections += len(luts)  
-                #do for all the luts individually
-                #total_memory += len(luts) * (2 ** lutsize)  # Memory per LUT is 2^lutsize
-
                 # Print the total LUT size, total variables, percentage of connections, and total memory
                 print(f"Total LUT size: {total_lutsizes}")
                 print(f"Total variables: {total_variables}")
-                print(f"Percentage of connections: {total_connections / total_luts * 100 if total_luts != 0 else 0}%")
+                print(f"Percentage of connections: {(total_connections /maxluts)}%")
+                #print(f"Percentage of connections: {(total_connections /maxluts) * 100 if total_luts != 0 else 0}%")
                 print(f"Total memory required: {memory_percentage}")
-                print(f"Percentage of LUTs: {luts_required * 100 if total_luts != 0 else 0}%")  # Modified line
-                for lut, unique_variables in unique_variables_per_lut.items():
-                    print(f"Number of unique variables for LUT {lut}: {len(unique_variables)}")
-                           
+                print(f"Percentage of LUTs: {luts_required * 100 }%")  # Modified line
+                
 
 
                
 
             case "5":
                 #(Optional) A visual representation of your mapped FPGA (bonus points)
+                
                 pass
             case "6":
                 print("LUT Conn Viewer: ALL LUTS IN THE FPGA")
