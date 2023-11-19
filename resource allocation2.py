@@ -35,12 +35,39 @@ def createTruthTable(booleanexpr, Vars):
 
 if __name__ == '__main__':
     #boolean_equation = input('What is the boolean equation?')
-
+    print("Welcome to the FPGA Resource Allocation Program")
+    print("Please set your limits for the FPGA")
+    maxluts = int(input("What is the maximum number of LUTs?"))
+    maxinputs = int(input("What is the maximum number of inputs?"))
+    maxoutputs = int(input("What is the maximum number of outputs?"))
     runprog = 0
     NonsingleVars = []
     myoutputs = {}
     master_lut_dict = {}
+    myoutputs["totalinputs"] = []
+    myoutputs["totaloutputs"] = 0
+    myoutputs["totalinputsmax"] = maxinputs
+    myoutputs["totaloutputsmax"] = maxoutputs
+    myoutputs["totalLUTS"] = maxluts
     while(runprog != 1):
+        if(myoutputs["totaloutputs"] > myoutputs["totaloutputsmax"]):
+            print("Error: Not enough outputs allocated")
+            break
+        if(len(myoutputs["totalinputs"]) > myoutputs["totalinputsmax"]):
+            print("Error: Not enough inputs allocated")
+            break
+        if(len(master_lut_dict) > myoutputs["totalLUTS"]):
+            print("Error: Not enough LUTs allocated")
+            break
+        print("Please select an option")
+        print("1. Enter a boolean equation")
+        print("2. Save the bitstream")
+        print("3. Load the bitstream")
+        print("4. Calculate FPGA resource usage")
+        print("5. Visual representation of FPGA")
+        print("6. View LUT connections and LUT details")
+        print("7. View bitstream/current FPGA state")
+        print("12. Exit")
         commandin = input('What would you like to do?')
         match commandin:
             case "1":
@@ -48,6 +75,7 @@ if __name__ == '__main__':
                 Variables = []
                 boolean_equation = input('What is the boolean equation?') 
                 a = boolean_equation.split('=')
+                myoutputs["totaloutputs"] += 1
                 myout = a[0]
                 varmaker = a[1]
                 NonsingleVars.append(myout)
@@ -59,6 +87,7 @@ if __name__ == '__main__':
                     if char not in ['(',')','+','*','!','&','|', ' ', '~']:
                         if char not in Variables:
                             Variables.append(char)
+                            myoutputs["totalinputs"].append(char)
                 Variables = sorted(Variables)
                 myoutputs[myout] = {}
                 myoutputs[myout]['Variables'] = Variables
@@ -137,7 +166,7 @@ if __name__ == '__main__':
                         myoutputs[myout]['LUTS'][myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = luteq[:-3]
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = {}
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Equation"] = luteq[:-3]
-                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Connected_LUTS"] = conlut
+                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Connected_LUTS"] = []
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"] = []
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["LUT_Size"] = lutsize
                         temper = created_usedvars[:-varsintermcount]
@@ -147,7 +176,11 @@ if __name__ == '__main__':
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["LUT_LOAD"] = luttruth
                         created_usedvars = created_usedvars[-varsintermcount:]
                         created_usedvars.append(myout + "_LUT" + str(lutsize) + "_" + str(lutcount))
-                        conlut = []
+                        for conner in conlut:
+                            if conner in master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"]:
+                                master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Connected_LUTS"].append(conner)
+                                conlut.remove(conner)
+                        
                         conlut.append(myout + "_LUT" + str(lutsize) + "_" + str(lutcount))
                         luteq = myout + "_LUT" + str(lutsize) + "_" + str(lutcount) + " | "
                         usedvars = usedvars[-varsintermcount:]
@@ -295,9 +328,12 @@ if __name__ == '__main__':
                 print("Input the LUT you want to view or input 'all' to view all LUTs")
                 lut_name = input("Enter the LUT name: ")
                 if lut_name == "all":
-                    print(master_lut_dict)
+                    print(json.dumps(master_lut_dict, indent=4))
                 else:
-                    print(master_lut_dict[lut_name])
+                    print(lut_name + ": ")
+                    print(json.dumps(master_lut_dict[lut_name], indent=4))
+            case "7":
+                print(json.dumps(myoutputs, indent=4))
             case "12":
                 break
     #print(myoutputs)
