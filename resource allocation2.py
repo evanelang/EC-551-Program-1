@@ -16,7 +16,19 @@ def processEq(booleanexpr, Vars):
         print("HI")
     return 0
 
-
+def createTruthTable(booleanexpr, Vars):
+    bool2 = sympify(booleanexpr)
+    #bool3 = SOPform(bool2)
+    mytruth = truth_table(bool2, Vars, input=False)
+    newtruth = []
+    x = 0
+    for t in mytruth:
+        if t == True:
+            newtruth.append(1)
+        else:
+            newtruth.append(0)
+        x += 1
+    return newtruth
 
 
 
@@ -27,6 +39,7 @@ if __name__ == '__main__':
     runprog = 0
     NonsingleVars = []
     myoutputs = {}
+    master_lut_dict = {}
     while(runprog != 1):
         commandin = input('What would you like to do?')
         match commandin:
@@ -89,8 +102,11 @@ if __name__ == '__main__':
                 lutcount = 0
                 luteq = ""
                 usedvars = []
+                created_usedvars = []
+                conlut = []
                 for term in eqsplit:
-                    print(term)
+                    
+                    
                     varsintermcount = 0
                     editterm = term
                     for otherouts in NonsingleVars:
@@ -103,9 +119,13 @@ if __name__ == '__main__':
                             otherlutcount = myoutputs[otherouts]['lutcount']
                             otherlutsize = myoutputs[otherouts]['lutsize']
                             term = term.replace(otherouts, otherouts + "_LUT" + str(otherlutsize) + "_" + str(otherlutcount))
+                            created_usedvars.append(otherouts+ "_LUT" + str(otherlutsize) + "_" + str(otherlutcount))
+                            conlut.append(otherouts+ "_LUT" + str(otherlutsize) + "_" + str(otherlutcount))
+
                     for var in Variables:
                         if var in editterm:
                             if var not in usedvars:
+                                created_usedvars.append(var)
                                 usedvars.append(var)
                                 varcount += 1
                                 varsintermcount += 1
@@ -115,10 +135,25 @@ if __name__ == '__main__':
                         exit()
                     if varcount > lutsize:
                         myoutputs[myout]['LUTS'][myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = luteq[:-3]
+                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = {}
+                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Equation"] = luteq[:-3]
+                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Connected_LUTS"] = conlut
+                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"] = []
+                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["LUT_Size"] = lutsize
+                        temper = created_usedvars[:-varsintermcount]
+                        for prevlut in temper:
+                            master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"].append(prevlut)
+                        luttruth = createTruthTable(luteq[:-3], master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"])
+                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["LUT_LOAD"] = luttruth
+                        created_usedvars = created_usedvars[-varsintermcount:]
+                        created_usedvars.append(myout + "_LUT" + str(lutsize) + "_" + str(lutcount))
+                        conlut = []
+                        conlut.append(myout + "_LUT" + str(lutsize) + "_" + str(lutcount))
                         luteq = myout + "_LUT" + str(lutsize) + "_" + str(lutcount) + " | "
                         usedvars = usedvars[-varsintermcount:]
                         varcount = varsintermcount + 1
                         lutcount += 1
+                        
                         print("HIT")
                     if varcount < lutsize:
                         luteq += term + " | "
@@ -131,16 +166,30 @@ if __name__ == '__main__':
                         #varcount = 1
                     print(usedvars)
                     print(varcount)
-                myoutputs[myout]['LUTS'][myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = luteq[:-3]
-                myoutputs[myout]['lutcount'] = lutcount
+                    myoutputs[myout]['LUTS'][myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = luteq[:-3]
+                    master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = {}
+                    master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Equation"] = luteq[:-3]
+                    master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Connected_LUTS"] = conlut
+                    master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"] = []
+                    master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["LUT_Size"] = lutsize
+                    temper = created_usedvars
+                    for prevlut in temper:
+                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"].append(prevlut)
+                    luttruth = createTruthTable(luteq[:-3], master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"])
+                    master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["LUT_LOAD"] = luttruth
+                    myoutputs[myout]['lutcount'] = lutcount
                         
             case "2":
                     with open("bitstream.json", 'w') as outfile:
                         json.dump(myoutputs, outfile)
+                    with open("masterlut.json", 'w') as outfile:
+                        json.dump(master_lut_dict, outfile)
                         
             case "3":
                 with open("bitstream.json", 'r') as outfile:
                     myoutputs = json.load(outfile)
+                with open("masterlut.json", 'r') as outfile:
+                    master_lut_dict = json.load(outfile)
                 print(myoutputs)
                 print(type(myoutputs))
 
@@ -240,8 +289,16 @@ if __name__ == '__main__':
             case "5":
                 #(Optional) A visual representation of your mapped FPGA (bonus points)
                 pass
-
-                #print(myoutputs)
+            case "6":
+                print("LUT Conn Viewer: ALL LUTS IN THE FPGA")
+                print(master_lut_dict.keys())
+                print("Input the LUT you want to view or input 'all' to view all LUTs")
+                lut_name = input("Enter the LUT name: ")
+                if lut_name == "all":
+                    print(master_lut_dict)
+                else:
+                    print(master_lut_dict[lut_name])
             case "12":
                 break
-    print(myoutputs)
+    #print(myoutputs)
+    print(master_lut_dict)
