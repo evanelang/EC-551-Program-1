@@ -302,8 +302,13 @@ if __name__ == '__main__':
                 label_result = tk.Label(root, width=25, height=2, text="FPGA Visual Representation", font=("Arial",20,"bold","italic"), bg='black', fg='teal')
                 label_result.pack()
 
+                #show the design resolution[ aiding users or the owners to know the 
+                # resolution of the design, basiaclly the limitations
+                design_resolution = tk.Label(root, text="Design Resolution: 570x600", bg='black', fg='dark green')
+                design_resolution.pack()
+
                 # Create a canvas for the buttons and wires
-                canvas = Canvas(root, width=500, height=450, bg='light gray')
+                canvas = Canvas(root, width=500, height=450, bg='medium sea green')
                 canvas.pack()
 
                 "connections between the LUTs"
