@@ -43,8 +43,8 @@ if __name__ == '__main__':
     maxinputs = int(input("What is the maximum number of inputs?"))
     maxoutputs = int(input("What is the maximum number of outputs?"))
     runprog = 0
-    NonsingleVars = []
     myoutputs = {}
+    myoutputs["NonsingleVars"] = []
     master_lut_dict = {}
     myoutputs["totalinputs"] = []
     myoutputs["totaloutputs"] = 0
@@ -80,8 +80,8 @@ if __name__ == '__main__':
                 myoutputs["totaloutputs"] += 1
                 myout = a[0]
                 varmaker = a[1]
-                NonsingleVars.append(myout)
-                for subber in NonsingleVars:
+                myoutputs["NonsingleVars"].append(myout)
+                for subber in myoutputs["NonsingleVars"]:
                     if subber in varmaker:
                         Variables.append(subber)
                         varmaker = varmaker.replace(subber, ' ')
@@ -140,7 +140,7 @@ if __name__ == '__main__':
                     
                     varsintermcount = 0
                     editterm = term
-                    for otherouts in NonsingleVars:
+                    for otherouts in myoutputs["NonsingleVars"]:
                         if otherouts in editterm:
                             if otherouts not in usedvars:
                                 varcount += 1
