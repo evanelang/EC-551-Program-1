@@ -6,10 +6,12 @@ from sympy.logic import SOPform
 from sympy.logic import POSform
 from sympy.logic import boolalg
 from sympy.logic.boolalg import And, Or, Not, Xor, Nand, Nor, Implies, Equivalent, truth_table
-import math
-import os
+import tkinter as tk
+from tkinter import *
+from tkinter import messagebox
+from colorama import Fore, Back, Style
+
 import json
-import logging
 
 def processEq(booleanexpr, Vars):
     if(len(Vars) == 4):
@@ -35,12 +37,39 @@ def createTruthTable(booleanexpr, Vars):
 
 if __name__ == '__main__':
     #boolean_equation = input('What is the boolean equation?')
-
+    print("Welcome to the FPGA Resource Allocation Program")
+    print("Please set your limits for the FPGA")
+    maxluts = int(input("What is the maximum number of LUTs?"))
+    maxinputs = int(input("What is the maximum number of inputs?"))
+    maxoutputs = int(input("What is the maximum number of outputs?"))
     runprog = 0
     NonsingleVars = []
     myoutputs = {}
     master_lut_dict = {}
+    myoutputs["totalinputs"] = []
+    myoutputs["totaloutputs"] = 0
+    myoutputs["totalinputsmax"] = maxinputs
+    myoutputs["totaloutputsmax"] = maxoutputs
+    myoutputs["totalLUTS"] = maxluts
     while(runprog != 1):
+        if(myoutputs["totaloutputs"] > myoutputs["totaloutputsmax"]):
+            print("Error: Not enough outputs allocated")
+            break
+        if(len(myoutputs["totalinputs"]) > myoutputs["totalinputsmax"]):
+            print("Error: Not enough inputs allocated")
+            break
+        if(len(master_lut_dict) > myoutputs["totalLUTS"]):
+            print("Error: Not enough LUTs allocated")
+            break
+        print("Please select an option")
+        print("1. Enter a boolean equation")
+        print("2. Save the bitstream")
+        print("3. Load the bitstream")
+        print("4. Calculate FPGA resource usage")
+        print("5. Visual representation of FPGA")
+        print("6. View LUT connections and LUT details")
+        print("7. View bitstream/current FPGA state")
+        print("12. Exit")
         commandin = input('What would you like to do?')
         match commandin:
             case "1":
@@ -48,6 +77,7 @@ if __name__ == '__main__':
                 Variables = []
                 boolean_equation = input('What is the boolean equation?') 
                 a = boolean_equation.split('=')
+                myoutputs["totaloutputs"] += 1
                 myout = a[0]
                 varmaker = a[1]
                 NonsingleVars.append(myout)
@@ -59,6 +89,7 @@ if __name__ == '__main__':
                     if char not in ['(',')','+','*','!','&','|', ' ', '~']:
                         if char not in Variables:
                             Variables.append(char)
+                            myoutputs["totalinputs"].append(char)
                 Variables = sorted(Variables)
                 myoutputs[myout] = {}
                 myoutputs[myout]['Variables'] = Variables
@@ -137,7 +168,7 @@ if __name__ == '__main__':
                         myoutputs[myout]['LUTS'][myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = luteq[:-3]
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)] = {}
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Equation"] = luteq[:-3]
-                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Connected_LUTS"] = conlut
+                        master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Connected_LUTS"] = []
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"] = []
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["LUT_Size"] = lutsize
                         temper = created_usedvars[:-varsintermcount]
@@ -147,7 +178,11 @@ if __name__ == '__main__':
                         master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["LUT_LOAD"] = luttruth
                         created_usedvars = created_usedvars[-varsintermcount:]
                         created_usedvars.append(myout + "_LUT" + str(lutsize) + "_" + str(lutcount))
-                        conlut = []
+                        for conner in conlut:
+                            if conner in master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Variables"]:
+                                master_lut_dict[myout + "_LUT" + str(lutsize) + "_" + str(lutcount)]["Connected_LUTS"].append(conner)
+                                conlut.remove(conner)
+                        
                         conlut.append(myout + "_LUT" + str(lutsize) + "_" + str(lutcount))
                         luteq = myout + "_LUT" + str(lutsize) + "_" + str(lutcount) + " | "
                         usedvars = usedvars[-varsintermcount:]
@@ -196,6 +231,7 @@ if __name__ == '__main__':
 
 
             case "4":
+                
                 total_luts = 0
                 total_variables = 0
                 total_lutsize = 0
@@ -203,64 +239,162 @@ if __name__ == '__main__':
                 total_memory = 0
                 total_input_mem=0
                 total_lutsizes=0
-                #to count the number of unique variables in each lut
-                unique_variables_per_lut = {}
-                # Iterate over all outputs
-                #put luts withing myout
-                for myout in master_lut_dict:
-                    luts = myoutputs[myout]['LUTS']
-                    print(luts)
-                    lutsize = myoutputs[myout]['lutsize']
-                    variables = myoutputs[myout]['Variables']
-                    lutcount = myoutputs[myout]['lutcount']
-                    conlut = myoutputs[myout]['Connected_LUTS']
-                    luttruth = myoutputs[myout]['Minterms']
+                total_connections = 0
 
-                    #to count the number of unique variables in each lut
-                    unique_variables_per_lut[myout] = []
-                    # Iterate over all LUTs
-                    for lut in luts:
-                        total_luts += len(luts)
-                        total_lutsize += lutsize
-                        total_lutsizes += lutsize
-                        total_input_mem += 2 ** len(variables)
-                        total_connections += len(conlut)
-                        total_input_mem += len(luttruth)
-                        #to count the number of unique variables in each lut
-                        for var in variables:
-                            if var not in unique_variables_per_lut[myout]:
-                                unique_variables_per_lut[myout].append(var)
-                    total_memory=total_input_mem/lutsize
-                print("Total LUTs: ", total_luts)
-               #print the number of total variables
-                for myout in unique_variables_per_lut:
-                    total_variables += len(unique_variables_per_lut[myout])
-                print("Total Variables: ", total_variables)
-                #print the total lut size
-                print("Total LUT Size: ", total_lutsize)
-                #print the total connections
-                print("Total Connections: ", total_connections)
-                #print the total memory
-                print("Total Memory: ", total_memory)
-                #print the total input memory
-                print("Total Input Memory: ", total_input_mem)
-                #print the total lut sizes
-                print("Total LUT Sizes: ", total_lutsizes)
-                #print the number of unique variables in each lut
-                print("Unique Variables Per LUT: ", unique_variables_per_lut)
+                for myout in master_lut_dict.keys():
+                    #luts=master_lut_dict[myout]['LUTS']
+                    
+                    
+                    #luts = master_lut_dict[myout]['LU']
+                    lutsize = master_lut_dict[myout]["LUT_Size"]
+                    print("lutsize",lutsize)
+                    variables = master_lut_dict[myout]["Variables"]
+                    print("variables",variables)
+                    total_luts_count= len(master_lut_dict.keys())
+                    print("total_luts_count",total_luts_count)
+                    connections_for_luts = len(master_lut_dict[myout]["Connected_LUTS"])
+                    print("connections_for_luts",connections_for_luts) # !!!debugging error starting here
+
+                # Iterate over all LUTs
+                    #for lut in master_lut_dict.keys():
+                    #for var in variables:
+                            #if var in master_lut_dict[lut]:
+                    total_input_mem += 2 ** len(variables)
+                    total_lutsizes += 2 ** lutsize
+                    total_variables += len(variables)         
+                    total_connections += connections_for_luts
+                    print("total",total_connections)
+                luts_required= total_variables/total_lutsizes
+                memory_percentage=(2**total_input_mem)*total_luts_count
+                #pecentage of fpga luts that are not connected...
+                    
+                    #if lutsize == len(variables):
+                        #print(f"LUT size matches the number of variables for output {myout} and LUT {lut}")
+                    #else:
+                        #print(f"LUT size does not match the number of variables for output {myout} and LUT {lut}")
+                # Print the total LUT size, total variables, percentage of connections, and total memory
+                print(f"Total LUT size: {total_lutsizes}")
+                print(f"Total variables: {total_variables}")
+                print(f"Percentage of connections: {(total_connections /maxluts)}%")
+                #print(f"Percentage of connections: {(total_connections /maxluts) * 100 if total_luts != 0 else 0}%")
+                print(f"Total memory required: {memory_percentage}")
+                print(f"Percentage of LUTs: {luts_required * 100 }%")  # Modified line
+                
+
+
+               
 
             case "5":
-                #(Optional) A visual representation of your mapped FPGA (bonus points)
-                pass
+    
+                "FPGA Visual Representation"
+                # Create the main window
+                #button to print master_lut_dict
+                "creating a button to print the master_lut_dict"
+                def print_master_lut_dict():
+                    print(master_lut_dict)
+
+                root = tk.Tk()
+                root.title("FPGA Visual Representation")
+                root.geometry("570x600+200+100")                  # width x height + x_offset + y_offset: our design constraints
+                root.resizable(False,False)
+                root.configure(bg="#17161b")
+
+                label_result = tk.Label(root, width=25, height=2, text="FPGA Visual Representation", font=("Arial",20,"bold","italic"), bg='black', fg='teal')
+                label_result.pack()
+
+                # Create a canvas for the buttons and wires
+                canvas = Canvas(root, width=500, height=450, bg='light gray')
+                canvas.pack()
+
+                "connections between the LUTs"
+                # Create a grid of buttons
+                buttons = {}
+                for i, (lut_name, lut_info) in enumerate(master_lut_dict.items()):
+                    # Get the position of the LUT from the lut_info
+                    button = tk.Button(canvas, text=lut_name)
+                    button.place(x=200, y=50 + i * 50)
+                    buttons[lut_name]=button
+
+                # Draw wires between the buttons
+                for lut_name, lut_info in master_lut_dict.items():
+                # Get the connections for the LUT from the lut_info
+                    connections = lut_info.get('Connected_LUTS')
+                    if connections:
+                        for connected_lut in connections:
+                         # Get the button windows for the LUTs
+                            button1 = buttons.get(lut_name)
+                            button2 = buttons.get(connected_lut)
+                            if button1 and button2:
+                                # Get the positions of the buttons
+                                x1, y1 = int(lut_button.place_info()['x']), int(lut_button.place_info()['y'])
+                                x2, y2 = int(variable_button.place_info()['x']), int(variable_button.place_info()['y'])
+                                # Draw a line between the buttons
+                                # Add the width of the button to the x-coordinate
+                                #x1 += button1.winfo_width()
+                                canvas.create_line(x1, y1, x2, y2, fill='red', width=5, dash=(4, 4))
+                
+
+                "connections between the variables and the LUTs"
+                #create a dictionary to store the variables button
+                variables_buttons = {}
+                for lut_name, lut_info in master_lut_dict.items():
+                    # Get the position of the LUT from the lut_info
+                    variables = lut_info.get('Variables')
+                    for i,variable in enumerate(variables):
+                            if variable not in variables_buttons:
+                                button=tk.Button(canvas,text=variable)
+                                button.place(x=50, y=50 + i * 50)
+                                variables_buttons[variable]=button
+                #draw wires between the variables and the LUTs
+                for lut_name, lut_info in master_lut_dict.items():
+                    lut_button = buttons.get(lut_name)
+                    variables=lut_info.get('Variables')
+                    for variable in variables:
+                        variable_button = variables_buttons.get(variable)
+                        if lut_button and variable_button:
+                            x1, y1 = int(lut_button.place_info()['x']), int(lut_button.place_info()['y'])
+                            x2, y2 = int(variable_button.place_info()['x']), int(variable_button.place_info()['y'])
+                            canvas.create_line(x1, y1, x2, y2, fill='blue', width=5, dash=(4, 4))
+                    
+
+
+                tk.Button(root, text="Exit", width=20, bg='magenta', fg='white', command=root.destroy).place(x=300, y=550)
+                tk.Button(root, text="master_lut_dict", width=20, bg='magenta', fg='white', command=print_master_lut_dict).place(x=100, y=550)
+                root.mainloop()
+
+                
+
+
+
+
+
+
+
+
+
+                    
+               
+
+
+
+
+               
+
+                
+                
+              
             case "6":
                 print("LUT Conn Viewer: ALL LUTS IN THE FPGA")
                 print(master_lut_dict.keys())
                 print("Input the LUT you want to view or input 'all' to view all LUTs")
                 lut_name = input("Enter the LUT name: ")
                 if lut_name == "all":
-                    print(master_lut_dict)
+                    print(json.dumps(master_lut_dict, indent=4))
                 else:
-                    print(master_lut_dict[lut_name])
+                    print(lut_name + ": ")
+                    print(json.dumps(master_lut_dict[lut_name], indent=4))
+            case "7":
+                print(json.dumps(myoutputs, indent=4))
             case "12":
                 break
     #print(myoutputs)
