@@ -383,7 +383,7 @@ if __name__ == '__main__':
 
 
                 tk.Button(root, text="Exit", width=20, bg='magenta', fg='white', command=root.destroy).place(x=1000, y=550)
-                tk.Button(root, text="master_lut_dict", width=20, bg='magenta', fg='white', command=print_master_lut_dict).place(x=850, y=550)
+                tk.Button(root, text="master_lut_dict", width=20, bg='magenta', fg='white', command=print_master_lut_dict).place(x=800, y=550)
                 root.mainloop()
 
                 
