@@ -124,3 +124,63 @@ This project is completed by the following students(authors)
     copyright   Evan  Lang      evanlang@bu.edu
     copyright   Mayra Texeira   msteixei@bu.edu  
 
+10 independent equations of 4 variables each:
+EC1=(A&B)|(C&D)
+EC2=(B&D)|(C&A)
+EC3=(F&A)|(K&B)
+EC4=(C&F&A)|(A&D)
+EC5=(Z&Y)|(B&G)
+EC6=(D&Z)|(F&C&Z)|(D&C&F)
+EC7=(A&B&C&D)|(B&C&~A)
+EC8=(~A&~B)|(~C&~D)
+EC9=(Y&~Z)|(Z&F)|(~F&~Y&~Z&D)
+EC10=(~B&C)|(A&B&C&D)
+10 interdependent equations of 4 variables each:
+EC1=(A&B)|(C&D)
+EC2=(B&D)|(C&A)|EC1
+EC3=(F&A)|(K&B)|EC2
+EC4=(C&F&A)|(A&D)|EC1|EC3
+EC5=(Z&Y)|(B&G)|EC2
+EC6=(D&Z)|(F&C&Z)|(D&C&F)|EC5
+EC7=(A&B&C&D)|(B&C&~A)|EC3
+EC8=(~A&~B)|(~C&~D)|EC2|EC6
+EC9=(Y&~Z)|(Z&F)|(~F&~Y&~Z&D)|EC8
+EC10=(~B&C)|(A&B&D)|EC6|EC7
+10 independent equations of 6 variables each:
+EC1=(A&B)|(C&D)|(G&F)
+EC2=(B&D)|(C&A)|(Z&F)
+EC3=(F&A)|(K&B)|(F&A&Z)|(Y&K)
+EC4=(C&F&A)|(A&D)|(B&W)
+EC5=(Z&Y&D)|(B&G&A)
+EC6=(D&Z&A&G)|(F&C&Z)|(D&C&F)
+EC7=(A&B&C&D)|(B&C&~A)|(L&Z)
+EC8=(~A&~B)|(~C&~D)|(Z&G)
+EC9=(Y&~Z)|(Z&F)|(~F&~Y&~Z&D)|(A&B)
+EC10=(~B&C)|(A&B&C&D)|(Z&A&F)
+10 interdependent equations of 6 variables each:
+EC1=(A&B)|(C&D)|(G&F)
+EC2=(B&D)|(C&A)|(Z&F&EC1)
+EC3=(F&A)|(K&B&EC1)|(F&A&Z)|(Y&K&EC2)
+EC4=(C&F&A)|(A&D)|(B&W&EC3)
+EC5=(Z&Y&D)|(B&G&A)|(EC1&EC2&EC3)
+EC6=(D&Z&A&G)|(F&C&Z)|(D&C&F)|EC4
+EC7=(A&B&C&D)|(B&C&~A)|(L&Z&EC6)|(A&EC2)
+EC8=(~A&~B)|(~C&~D)|(Z&G&EC7)
+EC9=(Y&~Z)|(Z&F)|(~F&~Y&~Z&D)|(A&B)
+EC10=(~B&C)|(A&B&C&D)|(Z&A&F)|EC9
+10 independent equations of 8 variables each:
+EC1=(A&B)|(C&D)|(G&F)|(Z&W)
+EC2=(B&D)|(C&A)|(Z&F)|(G&H)
+EC3=(F&A)|(K&B&D)|(F&A&Z)|(Y&K&H)
+EC4=(C&F&A)|(A&D&G)|(B&W&Z)
+EC5=(Z&Y&D)|(B&G&A)|(W&H)
+EC6=(D&Z&A&G&H&W)|(F&C&Z)|(D&C&F)  (USE 6LUT)
+EC7=(A&B&C&D)|(B&C&~A)|(L&Z&~B)|(W&~Z&L)
+EC8=(~A&~B&L)|(~C&~D&W)|(Z&G&A)|
+EC9=(Y&~Z)|(Z&F)|(~F&~Y&~Z&D)|(A&B&G)|(~A&B&G)|(G&L)
+EC10=(~B&C&W)|(A&B&C&D)|(Z&A&F)|(L&G)
+cRaZY:
+EC1=(A&B&C)|(~A&B&C)
+EC2=(A&B&C&D)|(A&B&C)
+EC3=(A&B)|(B&C)|(~A&B)|(~C&B)
+EC4=(A&(B|C)&EC1&EC2) USE LUT6
